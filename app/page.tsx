@@ -1,19 +1,19 @@
-'use client';
-
-import { useState } from 'react';
+import type { Metadata } from 'next';
 import Header from '@/components/public/Header';
 import Footer from '@/components/public/Footer';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { toast } from 'sonner';
 import {
   Sun, Zap, Battery, Wrench, BarChart3, Shield,
-  ArrowRight, Phone, Mail, CheckCircle2, Loader2,
-  Sparkles, Globe2, Users, TrendingUp,
+  CheckCircle2, Mail, Phone, Sparkles, Globe2, Users, TrendingUp,
 } from 'lucide-react';
+import HeroButtons from '@/components/public/HeroButtons';
+import ContactSectionClient from '@/components/public/ContactSectionClient';
+
+export const metadata: Metadata = {
+  title: 'PakSolarTech — #1 Solar Energy Company in Pakistan',
+  description: 'Harness the power of the sun with Pakistan\'s leading solar provider. Save up to 90% on bills with our residential and commercial solar solutions.',
+  keywords: 'solar energy Pakistan, best solar company, residential solar panels, commercial solar installation, net metering Pakistan',
+};
 
 /* ──────────────── SERVICE DATA ──────────────── */
 const services = [
@@ -108,19 +108,7 @@ function HeroSection() {
             Save up to 90% on electricity bills while contributing to a greener Pakistan.
           </p>
 
-          <div className="flex flex-wrap gap-4 animate-slide-up" style={{ animationDelay: '400ms' }}>
-            <Button size="lg" className="gap-2 glow text-base"
-              onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              Get Free Quote
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button size="lg" variant="outline" className="gap-2 text-base border-primary/30 hover:bg-primary/10"
-              onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              Our Services
-            </Button>
-          </div>
+          <HeroButtons />
 
           {/* Trust badges */}
           <div className="mt-12 flex flex-wrap items-center gap-6 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '600ms' }}>
@@ -214,7 +202,7 @@ function AboutSection() {
         <div className="grid items-center gap-12 lg:grid-cols-2">
           {/* Left — Content */}
           <div>
-            <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
+            <Badge variant="outline" className="mb-4 Hand-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
               <Users className="h-3.5 w-3.5" />
               About PakSolarTech
             </Badge>
@@ -266,34 +254,6 @@ function AboutSection() {
 
 /* ──────────────── CONTACT ──────────────── */
 function ContactSection() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name || !form.email || !form.message) {
-      toast.error('Please fill in all required fields');
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const res = await fetch('/api/inquiries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) throw new Error();
-      setSubmitted(true);
-      setForm({ name: '', email: '', phone: '', message: '' });
-      toast.success('Your inquiry has been submitted!');
-    } catch {
-      toast.error('Something went wrong. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   return (
     <section id="contact" className="section-padding relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
@@ -336,76 +296,11 @@ function ContactSection() {
             </div>
           </div>
 
-          {/* Right — Form */}
-          <div className="rounded-2xl border border-border/50 bg-card/80 p-6 sm:p-8 backdrop-blur-sm">
-            {submitted ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-                  <CheckCircle2 className="h-8 w-8 text-primary" />
-                </div>
-                <h3 className="mb-2 text-xl font-semibold">Thank You!</h3>
-                <p className="mb-6 text-muted-foreground">
-                  We&apos;ve received your inquiry and will get back to you within 24 hours.
-                </p>
-                <Button variant="outline" onClick={() => setSubmitted(false)}>
-                  Send Another Message
-                </Button>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid gap-5 sm:grid-cols-2">
-                  <div className="grid gap-2">
-                    <Label htmlFor="name">Full Name *</Label>
-                    <Input
-                      id="name"
-                      placeholder="Your name"
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="email">Email *</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    placeholder="+92 300 1234567"
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="message">Message *</Label>
-                  <Textarea
-                    id="message"
-                    placeholder="Tell us about your solar needs…"
-                    rows={4}
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                  />
-                </div>
-                <Button type="submit" className="w-full gap-2 glow" size="lg" disabled={submitting}>
-                  {submitting ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <ArrowRight className="h-4 w-4" />
-                  )}
-                  Submit Inquiry
-                </Button>
-              </form>
-            )}
-          </div>
+          {/* Right — Form (Client Component) */}
+          <ContactSectionClient />
         </div>
       </div>
     </section>
   );
 }
+
