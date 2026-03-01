@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
     LayoutDashboard, MessageSquare, FileText, LogOut,
-    Sun, Menu, X, ChevronRight,
+    Sun, Menu, X, ChevronRight, Store, Package, Users,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -14,6 +14,9 @@ import ThemeToggle from '@/components/ThemeToggle';
 
 const navItems = [
     { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/admin/vendors', label: 'Vendors', icon: Store },
+    { href: '/admin/products', label: 'Products', icon: Package },
+    { href: '/admin/users', label: 'Users', icon: Users },
     { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
     { href: '/admin/blogs', label: 'Blog Posts', icon: FileText },
 ];
@@ -32,27 +35,32 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const [mobileOpen, setMobileOpen] = useState(false);
 
     useEffect(() => {
-        const token = localStorage.getItem('admin_token');
-        const user = localStorage.getItem('admin_user');
-
-        if (!token || !user) {
-            router.push('/admin/login');
-            return;
-        }
-
-        try {
-            setAdmin(JSON.parse(user));
-        } catch {
-            router.push('/admin/login');
-            return;
-        }
-        setLoading(false);
+        const checkAuth = async () => {
+            try {
+                // Validate via cookie-based session (HttpOnly cookie set by server)
+                const res = await fetch('/api/auth/me');
+                if (!res.ok) {
+                    router.push('/admin/login');
+                    return;
+                }
+                const data = await res.json();
+                if (!data.user || !['super_admin', 'admin'].includes(data.user.role)) {
+                    router.push('/admin/login');
+                    return;
+                }
+                setAdmin(data.user);
+            } catch {
+                router.push('/admin/login');
+            } finally {
+                setLoading(false);
+            }
+        };
+        checkAuth();
     }, [router]);
 
-    const handleLogout = () => {
-        localStorage.removeItem('admin_token');
+    const handleLogout = async () => {
+        await fetch('/api/auth/logout', { method: 'POST' });
         localStorage.removeItem('admin_user');
-        document.cookie = 'token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
         router.push('/admin/login');
     };
 

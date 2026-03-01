@@ -33,8 +33,11 @@ export default function AdminLoginPage() {
                 return;
             }
 
-            localStorage.setItem('admin_token', data.token);
-            localStorage.setItem('admin_user', JSON.stringify(data.admin));
+            // Token is set as HttpOnly cookie by the server automatically
+            // Store non-sensitive user info in localStorage for UI use
+            if (data.user) {
+                localStorage.setItem('admin_user', JSON.stringify(data.user));
+            }
             router.push('/admin/dashboard');
         } catch {
             setError('Something went wrong. Please try again.');

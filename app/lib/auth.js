@@ -24,6 +24,11 @@ export function getTokenFromRequest(request) {
     // Fallback to cookie
     const cookie = request.headers.get('cookie');
     if (cookie) {
+        // Try new marketplace token first
+        const paksolarMatch = cookie.match(/paksolar_token=([^;]+)/);
+        if (paksolarMatch) return paksolarMatch[1];
+
+        // Fallback to old token name
         const match = cookie.match(/token=([^;]+)/);
         if (match) return match[1];
     }
