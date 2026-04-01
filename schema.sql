@@ -1,36 +1,66 @@
--- multi-vendor marketplace core schema
+-- ============================================================
+-- PakSolarTech - Full DB Reset & Schema
+-- ============================================================
 
--- 1. roles
-CREATE TABLE IF NOT EXISTS roles (
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- Drop all tables to start fresh
+DROP TABLE IF EXISTS views;
+DROP TABLE IF EXISTS activity_logs;
+DROP TABLE IF EXISTS order_items;
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS offers;
+DROP TABLE IF EXISTS products;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS vendors;
+DROP TABLE IF EXISTS blogs;
+DROP TABLE IF EXISTS inquiries;
+DROP TABLE IF EXISTS admins;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS roles;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+-- ============================================================
+-- 1. Roles
+-- ============================================================
+CREATE TABLE roles (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(50) NOT NULL UNIQUE
 );
 
-INSERT IGNORE INTO roles (name) VALUES ('super_admin'), ('admin'), ('vendor'), ('customer');
+INSERT INTO roles (name) VALUES ('super_admin'), ('admin'), ('vendor'), ('customer');
 
--- 2. users (migrating existing or creating new)
-CREATE TABLE IF NOT EXISTS users (
+-- ============================================================
+-- 2. Users
+-- ============================================================
+CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
-    password_hash VARCHAR(255),
-    role_id INT
+    password_hash VARCHAR(255) NOT NULL,
+    role_id INT NOT NULL DEFAULT 4,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (role_id) REFERENCES roles(id)
 );
 
--- Migration for existing users table
-ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash VARCHAR(255) AFTER email;
-ALTER TABLE users ADD COLUMN IF NOT EXISTS role_id INT AFTER password_hash;
-ALTER TABLE users ADD COLUMN IF NOT EXISTS is_active BOOLEAN DEFAULT TRUE AFTER role_id;
-ALTER TABLE users ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP AFTER is_active;
-ALTER TABLE users ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP AFTER created_at;
+-- ============================================================
+-- 3. Admins (legacy admin model support)
+-- ============================================================
+CREATE TABLE admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
--- Ensure constraints (may fail if data exists, handled by script)
--- ALTER TABLE users MODIFY COLUMN password_hash VARCHAR(255) NOT NULL;
--- ALTER TABLE users MODIFY COLUMN role_id INT NOT NULL;
--- ALTER TABLE users ADD FOREIGN KEY (role_id) REFERENCES roles(id);
-
--- 3. vendors
-CREATE TABLE IF NOT EXISTS vendors (
+-- ============================================================
+-- 4. Vendors
+-- ============================================================
+CREATE TABLE vendors (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL UNIQUE,
     business_name VARCHAR(150) NOT NULL,
@@ -42,15 +72,19 @@ CREATE TABLE IF NOT EXISTS vendors (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- 4. categories
-CREATE TABLE IF NOT EXISTS categories (
+-- ============================================================
+-- 5. Categories
+-- ============================================================
+CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     slug VARCHAR(100) NOT NULL UNIQUE
 );
 
--- 5. products (global registry)
-CREATE TABLE IF NOT EXISTS products (
+-- ============================================================
+-- 6. Products
+-- ============================================================
+CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     slug VARCHAR(255) NOT NULL UNIQUE,
@@ -62,8 +96,10 @@ CREATE TABLE IF NOT EXISTS products (
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
 );
 
--- 6. offers (vendor specific pricing/stock)
-CREATE TABLE IF NOT EXISTS offers (
+-- ============================================================
+-- 7. Offers (vendor-specific pricing/stock)
+-- ============================================================
+CREATE TABLE offers (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT NOT NULL,
     vendor_id INT NOT NULL,
@@ -76,8 +112,10 @@ CREATE TABLE IF NOT EXISTS offers (
     FOREIGN KEY (vendor_id) REFERENCES vendors(id) ON DELETE CASCADE
 );
 
--- 7. orders
-CREATE TABLE IF NOT EXISTS orders (
+-- ============================================================
+-- 8. Orders
+-- ============================================================
+CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     customer_id INT NOT NULL,
     total_amount DECIMAL(15,2) NOT NULL,
@@ -86,8 +124,10 @@ CREATE TABLE IF NOT EXISTS orders (
     FOREIGN KEY (customer_id) REFERENCES users(id)
 );
 
--- 8. order_items (with vendor links for splitting)
-CREATE TABLE IF NOT EXISTS order_items (
+-- ============================================================
+-- 9. Order Items
+-- ============================================================
+CREATE TABLE order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_id INT NOT NULL,
     offer_id INT NOT NULL,
@@ -101,8 +141,38 @@ CREATE TABLE IF NOT EXISTS order_items (
     FOREIGN KEY (vendor_id) REFERENCES vendors(id)
 );
 
--- 9. activity_logs
-CREATE TABLE IF NOT EXISTS activity_logs (
+-- ============================================================
+-- 10. Blogs
+-- ============================================================
+CREATE TABLE blogs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL UNIQUE,
+    excerpt TEXT,
+    content LONGTEXT,
+    cover_image VARCHAR(255),
+    is_published BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- ============================================================
+-- 11. Inquiries
+-- ============================================================
+CREATE TABLE inquiries (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20),
+    message TEXT NOT NULL,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================
+-- 12. Activity Logs
+-- ============================================================
+CREATE TABLE activity_logs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT,
     action VARCHAR(100) NOT NULL,
@@ -113,8 +183,10 @@ CREATE TABLE IF NOT EXISTS activity_logs (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
--- 10. analytics
-CREATE TABLE IF NOT EXISTS views (
+-- ============================================================
+-- 13. Views (Analytics)
+-- ============================================================
+CREATE TABLE views (
     id INT AUTO_INCREMENT PRIMARY KEY,
     entity_type ENUM('page', 'product') NOT NULL,
     entity_id INT,
@@ -122,4 +194,17 @@ CREATE TABLE IF NOT EXISTS views (
     ip_address VARCHAR(45),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (viewer_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- ============================================================
+-- Seed: Super Admin User
+-- Password: Admin@123 (bcrypt hash, cost=12)
+-- ============================================================
+INSERT INTO users (name, email, password_hash, role_id, is_active)
+VALUES (
+    'Super Admin',
+    'admin@paksolartech.com',
+    '$2b$12$nE.kvH/NxRJgF9azihAGVuULAI0wuUBTr/mXPf.vazI3Amzgum3Vq',
+    1,
+    TRUE
 );

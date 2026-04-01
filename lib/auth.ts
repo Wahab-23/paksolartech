@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { cookies } from 'next/headers';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-this';
+const JWT_SECRET = process.env.JWT_SECRET || 'paksolar-super-secret-jwt-key-2024';
 const COOKIE_NAME = 'paksolar_token';
 
 export type UserPayload = {

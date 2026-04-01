@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'paksolar-fallback-secret-change-me';
+const JWT_SECRET = process.env.JWT_SECRET || 'paksolar-super-secret-jwt-key-2024';
 
 export function signToken(payload) {
     return jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' });
@@ -18,7 +18,11 @@ export function getTokenFromRequest(request) {
     // Check Authorization header first
     const authHeader = request.headers.get('authorization');
     if (authHeader?.startsWith('Bearer ')) {
-        return authHeader.slice(7);
+        const headerToken = authHeader.slice(7);
+        // Guard against literal 'null'/'undefined' strings from localStorage.getItem returning null
+        if (headerToken && headerToken !== 'null' && headerToken !== 'undefined') {
+            return headerToken;
+        }
     }
 
     // Fallback to cookie

@@ -33,8 +33,10 @@ export default function AdminLoginPage() {
                 return;
             }
 
-            // Token is set as HttpOnly cookie by the server automatically
-            // Store non-sensitive user info in localStorage for UI use
+            // Store token and user info in localStorage for API calls and UI use
+            if (data.token) {
+                localStorage.setItem('admin_token', data.token);
+            }
             if (data.user) {
                 localStorage.setItem('admin_user', JSON.stringify(data.user));
             }
@@ -85,7 +87,7 @@ export default function AdminLoginPage() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="admin@paksolartech.com"
+                                placeholder="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
@@ -96,7 +98,7 @@ export default function AdminLoginPage() {
                             <Input
                                 id="password"
                                 type="password"
-                                placeholder="••••••••"
+                                placeholder="Password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
