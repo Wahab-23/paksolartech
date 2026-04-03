@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import AdminLayout from '@/components/admin/AdminLayout';
+
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -78,7 +78,7 @@ export default function BlogsPage() {
     };
 
     return (
-        <AdminLayout>
+        <>
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Blog Posts</h1>
@@ -192,6 +192,6 @@ export default function BlogsPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </AdminLayout>
+        </>
     );
 }

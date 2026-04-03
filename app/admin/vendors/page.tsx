@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+
 import { CheckCircle, XCircle, Clock, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
@@ -45,7 +45,7 @@ export default function AdminVendorsPage() {
     };
 
     return (
-        <AdminLayout>
+        <>
             <div className="mb-6 flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Vendors</h1>
@@ -125,6 +125,6 @@ export default function AdminVendorsPage() {
                     </table>
                 </div>
             )}
-        </AdminLayout>
+        </>
     );
 }

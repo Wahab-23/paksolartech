@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, use } from 'react';
 import { useRouter } from 'next/navigation';
-import AdminLayout from '@/components/admin/AdminLayout';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { ArrowLeft, Loader2, Upload, Image as ImageIcon, Pencil } from 'lucide-react';
+import { CraftEditor } from '@/components/craft/editor/CraftEditor';
 
 interface Props {
     params: Promise<{ id: string }>;
@@ -95,16 +96,16 @@ export default function EditBlogPage({ params }: Props) {
 
     if (loading) {
         return (
-            <AdminLayout>
+            <>
                 <div className="flex items-center justify-center py-20">
                     <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
-            </AdminLayout>
+            </>
         );
     }
 
     return (
-        <AdminLayout>
+        <>
             <div className="mx-auto max-w-3xl">
                 <Button variant="ghost" size="sm" className="mb-4 gap-2 text-muted-foreground" onClick={() => router.push('/admin/blogs')}>
                     <ArrowLeft className="h-4 w-4" /> Back to Posts
@@ -153,8 +154,11 @@ export default function EditBlogPage({ params }: Props) {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="content">Content * (HTML supported)</Label>
-                        <Textarea id="content" rows={12} value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} className="font-mono text-sm" />
+                        <Label>Content * (Drag & Drop Visual Builder)</Label>
+                        <CraftEditor 
+                            initialData={form.content}
+                            onNodesChange={(json: string) => setForm({ ...form, content: json })}
+                        />
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -171,6 +175,6 @@ export default function EditBlogPage({ params }: Props) {
                     </div>
                 </form>
             </div>
-        </AdminLayout>
+        </>
     );
 }

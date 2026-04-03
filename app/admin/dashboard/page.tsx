@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+
 import { Users, Store, ShoppingBag, MessageSquare, TrendingUp, FileText, Package, DollarSign } from 'lucide-react';
 import Link from 'next/link';
 
@@ -67,7 +67,7 @@ export default function DashboardPage() {
     ];
 
     return (
-        <AdminLayout>
+        <>
             <div className="mb-8">
                 <h1 className="text-2xl font-bold tracking-tight">Marketplace Dashboard</h1>
                 <p className="mt-1 text-sm text-muted-foreground">Full overview of the PakSolarTech multi-vendor platform.</p>
@@ -114,6 +114,6 @@ export default function DashboardPage() {
                     ))}
                 </div>
             </div>
-        </AdminLayout>
+        </>
     );
 }

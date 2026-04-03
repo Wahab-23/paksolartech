@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import AdminLayout from '@/components/admin/AdminLayout';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { ArrowLeft, Loader2, Upload, Image as ImageIcon, FileText } from 'lucide-react';
+import { CraftEditor } from '@/components/craft/editor/CraftEditor';
 
 export default function NewBlogPage() {
     const router = useRouter();
@@ -83,7 +84,7 @@ export default function NewBlogPage() {
     };
 
     return (
-        <AdminLayout>
+        <>
             <div className="mx-auto max-w-3xl">
                 <Button
                     variant="ghost"
@@ -166,14 +167,9 @@ export default function NewBlogPage() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="content">Content * (HTML supported)</Label>
-                        <Textarea
-                            id="content"
-                            placeholder="Write your blog content here. HTML tags are supported."
-                            rows={12}
-                            value={form.content}
-                            onChange={(e) => setForm({ ...form, content: e.target.value })}
-                            className="font-mono text-sm"
+                        <Label>Content * (Drag & Drop Visual Builder)</Label>
+                        <CraftEditor 
+                            onNodesChange={(json: string) => setForm({ ...form, content: json })}
                         />
                     </div>
 
@@ -199,6 +195,6 @@ export default function NewBlogPage() {
                     </div>
                 </form>
             </div>
-        </AdminLayout>
+        </>
     );
 }

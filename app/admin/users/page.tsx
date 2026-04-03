@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+
 import { Plus, X, Pencil, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -108,7 +108,7 @@ export default function AdminUsersPage() {
     };
 
     return (
-        <AdminLayout>
+        <>
             <div className="mb-6 flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Users</h1>
@@ -285,6 +285,6 @@ export default function AdminUsersPage() {
                     </table>
                 </div>
             )}
-        </AdminLayout>
+        </>
     );
 }

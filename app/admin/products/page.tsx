@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+
 import { Plus, Pencil, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -55,7 +55,7 @@ export default function AdminProductsPage() {
     };
 
     return (
-        <AdminLayout>
+        <>
             <div className="mb-6 flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Products</h1>
@@ -136,6 +136,6 @@ export default function AdminProductsPage() {
                     </table>
                 </div>
             )}
-        </AdminLayout>
+        </>
     );
 }

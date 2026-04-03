@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowLeft, Newspaper } from 'lucide-react';
 import { getBlogBySlug } from '@/app/models/blog.model';
+import { CraftRenderer } from '@/components/craft/CraftRenderer';
 
 interface Props {
     params: Promise<{ slug: string }>;
@@ -74,10 +75,7 @@ export default async function BlogDetailPage({ params }: Props) {
                         )}
 
                         {/* Content */}
-                        <div
-                            className="prose prose-invert max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-a:text-primary prose-p:leading-relaxed prose-p:text-muted-foreground prose-strong:text-foreground"
-                            dangerouslySetInnerHTML={{ __html: blog.content }}
-                        />
+                        <CraftRenderer data={blog.content} />
                     </div>
                 </article>
             </main>

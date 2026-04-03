@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import AdminLayout from '@/components/admin/AdminLayout';
+
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -78,7 +78,7 @@ export default function InquiriesPage() {
     };
 
     return (
-        <AdminLayout>
+        <>
             <div className="mb-6 flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">Inquiries</h1>
@@ -206,6 +206,6 @@ export default function InquiriesPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </AdminLayout>
+        </>
     );
 }
