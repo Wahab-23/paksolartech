@@ -1,9 +1,12 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { Editor, Frame, Element } from '@craftjs/core';
 import { Text, Container, Button, Image, Video } from '../selectors';
 import { Toolbox } from './Toolbox';
 import { SettingsPanel } from './SettingsPanel';
 import { EditorTopbar } from './EditorTopbar';
+import { createPortal } from 'react-dom';
 
 interface CraftEditorProps {
     initialData?: string;
@@ -11,6 +14,26 @@ interface CraftEditorProps {
 }
 
 export const CraftEditor = ({ initialData, onNodesChange }: CraftEditorProps) => {
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (isFullscreen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isFullscreen]);
+
+    const toggleFullscreen = useCallback(() => {
+        setIsFullscreen(prev => !prev);
+    }, []);
+
     let parsedData = initialData;
     let isLegacy = false;
 
@@ -52,8 +75,8 @@ export const CraftEditor = ({ initialData, onNodesChange }: CraftEditorProps) =>
         }
     }
 
-    return (
-        <Editor 
+    const editorContent = (
+        <Editor
             resolver={{ Text, Container, Button, Image, Video }}
             onNodesChange={(query) => {
                 if (onNodesChange) {
@@ -61,32 +84,49 @@ export const CraftEditor = ({ initialData, onNodesChange }: CraftEditorProps) =>
                 }
             }}
         >
-           <div className="flex flex-col min-h-[700px] border border-border/50 rounded-xl overflow-hidden bg-background">
-               <EditorTopbar />
-               <div className="flex flex-1 overflow-hidden" style={{ height: '700px' }}>
-                   {/* Main Canvas */}
-                   <div className="flex-1 bg-[#09090b] overflow-y-auto p-4 md:p-8" id="craft-canvas-container">
-                       <div className="mx-auto max-w-4xl bg-background min-h-full rounded-xl shadow-sm border border-border/30 overflow-hidden">
-                           <Frame data={parsedData}>
-                               {!parsedData && (
-                               <Element is={Container} padding={20} canvas>
-                                   <Text text="Welcome to Craft.js Editor! Drag items from the sidebar to begin." />
-                               </Element>
-                               )}
-                           </Frame>
-                       </div>
-                   </div>
-                   {/* Sidebar */}
-                   <div className="w-[320px] border-l border-border/50 bg-card/50 flex flex-col h-full shrink-0">
-                       <div className="flex-1 overflow-y-auto border-b border-border/50" style={{ maxHeight: '40%' }}>
-                           <Toolbox />
-                       </div>
-                       <div className="flex-1 overflow-y-auto bg-muted/10 relative">
-                           <SettingsPanel />
-                       </div>
-                   </div>
-               </div>
-           </div>
+            <div
+                className={
+                    isFullscreen
+                        ? 'fixed inset-0 z-[9999] flex flex-col bg-[#0f0f11]'
+                        : 'flex flex-col border border-border/50 rounded-xl overflow-hidden bg-[#0f0f11]'
+                }
+                style={isFullscreen ? undefined : { minHeight: 700 }}
+            >
+                {/* ── Top Bar ── */}
+                <EditorTopbar isFullscreen={isFullscreen} onToggleFullscreen={toggleFullscreen} />
+
+                {/* ── Body ── */}
+                <div className="flex flex-1 overflow-hidden">
+                    {/* Left Toolbox Panel */}
+                    <aside className="w-[220px] shrink-0 border-r border-white/10 bg-[#18181b] flex flex-col overflow-y-auto">
+                        <Toolbox />
+                    </aside>
+
+                    {/* Canvas */}
+                    <main className="flex-1 overflow-y-auto" id="craft-canvas-container">
+                        <div className="bg-white dark:bg-[#1c1c1f] min-h-full overflow-hidden">
+                            <Frame data={parsedData}>
+                                {!parsedData && (
+                                    <Element is={Container} padding={20} canvas>
+                                        <Text text="Start building your blog post. Drag blocks from the left panel." />
+                                    </Element>
+                                )}
+                            </Frame>
+                        </div>
+                    </main>
+
+                    {/* Right Settings Panel */}
+                    <aside className="w-[280px] shrink-0 border-l border-white/10 bg-[#18181b] flex flex-col overflow-hidden">
+                        <SettingsPanel />
+                    </aside>
+                </div>
+            </div>
         </Editor>
     );
+
+    if (isFullscreen && mounted) {
+        return createPortal(editorContent, document.body);
+    }
+
+    return editorContent;
 };

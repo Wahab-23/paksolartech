@@ -53,7 +53,20 @@ export const CraftRenderer = ({ data }: { data: string }) => {
                         {children}
                     </div>
                 );
-            case 'Text':
+            case 'Text': {
+                let TagName = props.tagName || 'p';
+                
+                // HTML5 prevents nesting block elements (like <p>, <div>, <h1>) inside a <p>.
+                // If a user copied/pasted rich text with <p> tags, the browser auto-closes the parent <p>
+                // before React hydrates, resulting in a server/client DOM mismatch error.
+                // We defensively switch to a <div> if we're rendering a <p> and see nested blocks.
+                if (TagName === 'p') {
+                    const hasBlockElements = /<(p|div|h[1-6]|ul|ol|li|blockquote|table|figure)[^>]*>/i.test(props.text || '');
+                    if (hasBlockElements) TagName = 'div';
+                }
+                
+                const Tag = TagName as any;
+                
                 return (
                     <div 
                         key={nodeId} 
@@ -62,7 +75,7 @@ export const CraftRenderer = ({ data }: { data: string }) => {
                             margin: props.margin ? `${props.margin[0]}px ${props.margin[1]}px ${props.margin[2]}px ${props.margin[3]}px` : '0',
                         }}
                     >
-                        <p dangerouslySetInnerHTML={{ __html: props.text || '' }} style={{ 
+                        <Tag dangerouslySetInnerHTML={{ __html: props.text || '' }} style={{ 
                             fontSize: `${props.fontSize || 16}px`, 
                             textAlign: props.textAlign || 'left', 
                             fontWeight: props.fontWeight || 'normal', 
@@ -71,6 +84,7 @@ export const CraftRenderer = ({ data }: { data: string }) => {
                         }} />
                     </div>
                 );
+            }
             case 'Button':
                 return (
                     <div key={nodeId} style={{ display: 'inline-block' }}>

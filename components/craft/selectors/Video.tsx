@@ -20,7 +20,7 @@ export const VideoSettings = () => {
           onChange={(e) => setProp((props: any) => props.src = e.target.value)} 
           placeholder="https://www.youtube.com/embed/..."
         />
-        <p className="text-xs text-muted-foreground">Make sure to use the embed URL, not the watch URL.</p>
+        <p className="text-xs text-white/40">Make sure to use the embed URL, not the watch URL.</p>
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div className="grid gap-2">

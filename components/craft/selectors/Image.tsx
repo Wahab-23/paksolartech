@@ -14,44 +14,44 @@ export const ImageSettings = () => {
   }));
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 text-white/80">
       <div className="grid gap-2">
         <Label>Image URL (src)</Label>
-        <Input 
-          value={src || ''} 
-          onChange={(e) => setProp((props: any) => props.src = e.target.value)} 
+        <Input
+          value={src || ''}
+          onChange={(e) => setProp((props: any) => props.src = e.target.value)}
           placeholder="https://..."
         />
       </div>
       <div className="grid gap-2">
         <Label>Alt Text</Label>
-        <Input 
-          value={alt || ''} 
-          onChange={(e) => setProp((props: any) => props.alt = e.target.value)} 
+        <Input
+          value={alt || ''}
+          onChange={(e) => setProp((props: any) => props.alt = e.target.value)}
         />
       </div>
       <div className="grid grid-cols-2 gap-2">
         <div className="grid gap-2">
           <Label>Width</Label>
-          <Input 
-            value={width || ''} 
-            onChange={(e) => setProp((props: any) => props.width = e.target.value)} 
+          <Input
+            value={width || ''}
+            onChange={(e) => setProp((props: any) => props.width = e.target.value)}
             placeholder="100% or 400px"
           />
         </div>
         <div className="grid gap-2">
           <Label>Height</Label>
-          <Input 
-            value={height || ''} 
-            onChange={(e) => setProp((props: any) => props.height = e.target.value)} 
+          <Input
+            value={height || ''}
+            onChange={(e) => setProp((props: any) => props.height = e.target.value)}
             placeholder="auto or 300px"
           />
         </div>
       </div>
       <div className="grid gap-2">
         <Label>Object Fit</Label>
-        <select 
-          className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+        <select
+          className="flex h-9 w-full rounded-md border border-white/20 bg-[#1e1e24] text-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
           value={objectFit || 'cover'}
           onChange={(e) => setProp((props: any) => props.objectFit = e.target.value)}
         >
@@ -63,10 +63,10 @@ export const ImageSettings = () => {
       </div>
       <div className="grid gap-2">
         <Label>Border Radius (px)</Label>
-        <Input 
+        <Input
           type="number"
-          value={borderRadius || 0} 
-          onChange={(e) => setProp((props: any) => props.borderRadius = Number(e.target.value))} 
+          value={borderRadius || 0}
+          onChange={(e) => setProp((props: any) => props.borderRadius = Number(e.target.value))}
         />
       </div>
     </div>
@@ -101,7 +101,7 @@ export const Image = ({ src, alt, width, height, objectFit, borderRadius }: any)
           }}
         />
       ) : (
-        <div 
+        <div
           style={{
             width: '100%',
             height: '200px',

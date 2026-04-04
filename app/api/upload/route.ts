@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
-export async function POST(request) {
+export async function POST(request: Request) {
     try {
         const formData = await request.formData();
         const file = formData.get('file');
@@ -30,7 +30,7 @@ export async function POST(request) {
 
         const url = `/uploads/blogs/${uniqueName}`;
         return NextResponse.json({ url, filename: uniqueName }, { status: 201 });
-    } catch (error) {
+    } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

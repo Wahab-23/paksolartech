@@ -73,7 +73,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
 
     const SidebarContent = () => (
-        <div className="flex h-full flex-col">
+        <div className="flex h-screen flex-col sticky top-0">
             {/* Logo */}
             <div className="flex items-center gap-2.5 px-4 py-5">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">

@@ -1,41 +1,102 @@
+'use client';
+
 import React from 'react';
 import { useEditor } from '@craftjs/core';
-import { Button } from '@/components/ui/button';
-import { Save, Undo, Redo } from 'lucide-react';
+import {
+    Undo2, Redo2, Maximize2, Minimize2, Eye, EyeOff,
+    Code2, LayoutTemplate, Pencil, AlignLeft
+} from 'lucide-react';
 
-export const EditorTopbar = () => {
-  const { actions, query, canUndo, canRedo } = useEditor((state, query) => ({
-    canUndo: query.history.canUndo(),
-    canRedo: query.history.canRedo(),
-  }));
+interface EditorTopbarProps {
+    isFullscreen: boolean;
+    onToggleFullscreen: () => void;
+}
 
-  return (
-    <div className="flex items-center justify-between p-3 bg-muted/20 border-b border-border/50">
-      <div className="flex items-center gap-2">
-        <Button 
-          variant="outline" 
-          size="sm" 
-          type="button"
-          className="h-8 w-8 p-0"
-          onClick={() => actions.history.undo()} 
-          disabled={!canUndo}
-          title="Undo"
+export const EditorTopbar = ({ isFullscreen, onToggleFullscreen }: EditorTopbarProps) => {
+    const { actions, query, canUndo, canRedo, enabled } = useEditor((state, query) => ({
+        canUndo: query.history.canUndo(),
+        canRedo: query.history.canRedo(),
+        enabled: state.options.enabled,
+    }));
+
+    const TopBtn = ({
+        onClick,
+        disabled,
+        title,
+        children,
+        active,
+    }: {
+        onClick: () => void;
+        disabled?: boolean;
+        title: string;
+        children: React.ReactNode;
+        active?: boolean;
+    }) => (
+        <button
+            type="button"
+            onClick={onClick}
+            disabled={disabled}
+            title={title}
+            className={`
+                inline-flex items-center justify-center w-8 h-8 rounded-md text-sm transition-all
+                ${disabled ? 'opacity-30 cursor-not-allowed' : 'hover:bg-white/10 cursor-pointer'}
+                ${active ? 'bg-white/15 text-blue-400' : 'text-white/60'}
+            `}
         >
-          <Undo className="h-4 w-4" />
-        </Button>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          type="button"
-          className="h-8 w-8 p-0"
-          onClick={() => actions.history.redo()} 
-          disabled={!canRedo}
-          title="Redo"
-        >
-          <Redo className="h-4 w-4" />
-        </Button>
-        <span className="text-xs text-muted-foreground ml-2">Craft.js Editor</span>
-      </div>
-    </div>
-  );
+            {children}
+        </button>
+    );
+
+    const Divider = () => <div className="w-px h-5 bg-white/10 mx-1" />;
+
+    return (
+        <div className="flex items-center justify-between px-3 py-2 bg-[#1a1a1f] border-b border-white/10 shrink-0">
+            {/* Left – Brand & Mode */}
+            <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 mr-2">
+                    <LayoutTemplate className="h-4 w-4 text-blue-400" />
+                    <span className="text-xs font-semibold text-white/80 tracking-wide">Visual Editor</span>
+                </div>
+
+                <Divider />
+
+                {/* Edit / Preview toggle */}
+                <TopBtn
+                    onClick={() => actions.setOptions(options => { options.enabled = !options.enabled; })}
+                    title={enabled ? 'Switch to Preview' : 'Switch to Edit'}
+                    active={enabled}
+                >
+                    {enabled ? <Pencil className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
+                </TopBtn>
+
+                <Divider />
+
+                {/* Undo / Redo */}
+                <TopBtn onClick={() => actions.history.undo()} disabled={!canUndo} title="Undo (Ctrl+Z)">
+                    <Undo2 className="h-3.5 w-3.5" />
+                </TopBtn>
+                <TopBtn onClick={() => actions.history.redo()} disabled={!canRedo} title="Redo (Ctrl+Y)">
+                    <Redo2 className="h-3.5 w-3.5" />
+                </TopBtn>
+            </div>
+
+            {/* Centre – status */}
+            <div className="flex items-center gap-1.5">
+                <span className={`w-1.5 h-1.5 rounded-full ${enabled ? 'bg-green-400 animate-pulse' : 'bg-amber-400'}`} />
+                <span className="text-[11px] text-white/40 font-medium">
+                    {enabled ? 'Editing' : 'Preview'}
+                </span>
+            </div>
+
+            {/* Right – Fullscreen */}
+            <div className="flex items-center gap-1">
+                <TopBtn onClick={onToggleFullscreen} title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}>
+                    {isFullscreen
+                        ? <Minimize2 className="h-3.5 w-3.5" />
+                        : <Maximize2 className="h-3.5 w-3.5" />
+                    }
+                </TopBtn>
+            </div>
+        </div>
+    );
 };

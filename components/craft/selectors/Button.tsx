@@ -32,7 +32,7 @@ export const ButtonSettings = () => {
       <div className="grid gap-2">
         <Label>Variant</Label>
         <select 
-          className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-9 w-full rounded-md border border-white/20 bg-[#1e1e24] text-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
           value={variant || 'default'}
           onChange={(e) => setProp((props: any) => props.variant = e.target.value)}
         >
@@ -47,7 +47,7 @@ export const ButtonSettings = () => {
       <div className="grid gap-2">
         <Label>Size</Label>
         <select 
-          className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex h-9 w-full rounded-md border border-white/20 bg-[#1e1e24] text-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
           value={size || 'default'}
           onChange={(e) => setProp((props: any) => props.size = e.target.value)}
         >
