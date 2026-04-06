@@ -78,7 +78,12 @@ CREATE TABLE vendors (
 CREATE TABLE categories (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    slug VARCHAR(100) NOT NULL UNIQUE
+    slug VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    icon VARCHAR(255),
+    meta_title VARCHAR(255),
+    meta_description TEXT,
+    meta_keywords TEXT
 );
 
 -- ============================================================
@@ -88,10 +93,22 @@ CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     slug VARCHAR(255) NOT NULL UNIQUE,
-    description TEXT,
+    description LONGTEXT,
+    short_desc VARCHAR(255),
     category_id INT,
     image_url VARCHAR(255),
+    images JSON,
     status ENUM('active', 'inactive') DEFAULT 'active',
+    badge VARCHAR(50),
+    price_from DECIMAL(10,2),
+    price_to DECIMAL(10,2),
+    is_featured BOOLEAN DEFAULT FALSE,
+    wattage INT,
+    brand VARCHAR(100),
+    specs JSON,
+    meta_title VARCHAR(255),
+    meta_description TEXT,
+    meta_keywords TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
 );

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { Editor, Frame, Element } from '@craftjs/core';
-import { Text, Container, Button, Image, Video } from '../selectors';
+import { Text, Container, Button, Image, Video, RawHtml } from '../selectors';
 import { Toolbox } from './Toolbox';
 import { SettingsPanel } from './SettingsPanel';
 import { EditorTopbar } from './EditorTopbar';
@@ -77,7 +77,7 @@ export const CraftEditor = ({ initialData, onNodesChange }: CraftEditorProps) =>
 
     const editorContent = (
         <Editor
-            resolver={{ Text, Container, Button, Image, Video }}
+            resolver={{ Text, Container, Button, Image, Video, RawHtml }}
             onNodesChange={(query) => {
                 if (onNodesChange) {
                     onNodesChange(query.serialize());

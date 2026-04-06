@@ -134,6 +134,16 @@ export const CraftRenderer = ({ data }: { data: string }) => {
                         ) : null}
                     </div>
                 );
+            case 'RawHtml':
+                return (
+                    <div 
+                        key={nodeId} 
+                        className="p-1 min-h-[2em] w-full"
+                        style={{ margin: props.margin ? `${props.margin[0]}px ${props.margin[1]}px ${props.margin[2]}px ${props.margin[3]}px` : '0' }}
+                    >
+                        {props.html ? <div dangerouslySetInnerHTML={{ __html: props.html }} /> : null}
+                    </div>
+                );
             default:
                 // Handle unmapped craft root nodes gracefully or simple text strings
                 try {

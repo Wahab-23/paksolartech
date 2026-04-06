@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useEditor, Element } from '@craftjs/core';
-import { Type, Layout, Image as ImageIcon, VideoIcon, MousePointerClick, Heading1, Quote, Minus } from 'lucide-react';
-import { Text, Container, Image, Video, Button as CustomButton } from '../selectors';
+import { Type, Layout, Image as ImageIcon, VideoIcon, MousePointerClick, Heading1, Quote, Minus, Code } from 'lucide-react';
+import { Text, Container, Image, Video, Button as CustomButton, RawHtml } from '../selectors';
 
 interface BlockItemProps {
     label: string;
@@ -101,6 +101,12 @@ export const Toolbox = () => {
                     label="Button"
                     icon={<MousePointerClick className="h-5 w-5" />}
                     refCallback={(ref) => create(ref, <CustomButton text="Click Here" />)}
+                />
+                <BlockItem
+                    label="Raw HTML"
+                    icon={<Code className="h-5 w-5" />}
+                    refCallback={(ref) => create(ref, <RawHtml />)}
+                    wide
                 />
             </div>
 

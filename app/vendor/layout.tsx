@@ -1,7 +1,5 @@
 import { getSession } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import Header from "@/components/public/Header";
-import Footer from "@/components/public/Footer";
 
 export default async function VendorLayout({
     children,
@@ -16,7 +14,6 @@ export default async function VendorLayout({
 
     return (
         <div className="min-h-screen flex flex-col bg-background">
-            <Header />
             <div className="flex-1 flex overflow-hidden">
                 {/* Simple Sidebar */}
                 <aside className="w-64 border-r bg-card/50 backdrop-blur-sm hidden md:block">
@@ -44,7 +41,6 @@ export default async function VendorLayout({
                     {children}
                 </main>
             </div>
-            <Footer />
         </div>
     );
 }

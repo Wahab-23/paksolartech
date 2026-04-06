@@ -71,12 +71,25 @@ export const EditorTopbar = ({ isFullscreen, onToggleFullscreen }: EditorTopbarP
 
                 <Divider />
 
-                {/* Undo / Redo */}
                 <TopBtn onClick={() => actions.history.undo()} disabled={!canUndo} title="Undo (Ctrl+Z)">
                     <Undo2 className="h-3.5 w-3.5" />
                 </TopBtn>
                 <TopBtn onClick={() => actions.history.redo()} disabled={!canRedo} title="Redo (Ctrl+Y)">
                     <Redo2 className="h-3.5 w-3.5" />
+                </TopBtn>
+
+                <Divider />
+
+                {/* View/Copy Code */}
+                <TopBtn 
+                    onClick={() => {
+                        const data = query.serialize();
+                        navigator.clipboard.writeText(data);
+                        alert("Editor state JSON copied to clipboard!");
+                    }} 
+                    title="Copy Editor Code"
+                >
+                    <Code2 className="h-3.5 w-3.5" />
                 </TopBtn>
             </div>
 

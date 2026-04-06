@@ -1,7 +1,5 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import Header from '@/components/public/Header';
-import Footer from '@/components/public/Footer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowLeft, Newspaper } from 'lucide-react';
@@ -32,7 +30,6 @@ export default async function BlogDetailPage({ params }: Props) {
 
     return (
         <>
-            <Header />
             <main className="min-h-screen pt-24">
                 <article className="section-padding">
                     <div className="mx-auto max-w-3xl">
@@ -79,7 +76,6 @@ export default async function BlogDetailPage({ params }: Props) {
                     </div>
                 </article>
             </main>
-            <Footer />
         </>
     );
 }

@@ -1,6 +1,4 @@
 import Link from 'next/link';
-import Header from '@/components/public/Header';
-import Footer from '@/components/public/Footer';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, ArrowRight, Newspaper } from 'lucide-react';
 
@@ -35,7 +33,6 @@ export default async function BlogPage() {
 
     return (
         <>
-            <Header />
             <main className="min-h-screen pt-24">
                 {/* Header */}
                 <section className="section-padding pb-8">
@@ -117,7 +114,6 @@ export default async function BlogPage() {
                     </div>
                 </section>
             </main>
-            <Footer />
         </>
     );
 }

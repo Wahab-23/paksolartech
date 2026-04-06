@@ -1,20 +1,31 @@
 import { NextResponse } from 'next/server';
-import { products, categories } from '@/lib/dummyProducts';
+import { getAllProducts, getAllCategories } from '@/app/models/product.model';
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const categorySlug = searchParams.get('category') || 'all';
     const featured = searchParams.get('featured') === 'true';
 
-    let result = products.filter((p) => p.status === 'active');
+    try {
+        let products = await getAllProducts({ activeOnly: true });
+        const categories = await getAllCategories();
 
-    if (categorySlug !== 'all') {
-        result = result.filter((p) => p.category_slug === categorySlug);
+        if (categorySlug !== 'all') {
+            const category = categories.find((c: any) => c.slug === categorySlug);
+            if (category) {
+                products = products.filter((p: any) => p.category_id === category.id);
+            } else {
+                products = [];
+            }
+        }
+
+        if (featured) {
+            products = products.filter((p: any) => p.is_featured);
+        }
+
+        return NextResponse.json({ products, categories });
+    } catch (error) {
+        console.error('Public Fetch Products error:', error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
-
-    if (featured) {
-        result = result.filter((p) => p.is_featured);
-    }
-
-    return NextResponse.json({ products: result, categories });
 }

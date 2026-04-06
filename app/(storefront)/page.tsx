@@ -1,13 +1,15 @@
-import type { Metadata } from 'next';
-import Header from '@/components/public/Header';
-import Footer from '@/components/public/Footer';
+import { Metadata } from 'next';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Sun, Zap, Battery, Wrench, BarChart3, Shield,
-  CheckCircle2, Mail, Phone, Sparkles, Globe2, Users, TrendingUp,
+  CheckCircle2, Mail, Phone, Sparkles, Globe2, Users, TrendingUp, ArrowRight
 } from 'lucide-react';
+import Link from 'next/link';
 import HeroButtons from '@/components/public/HeroButtons';
 import ContactSectionClient from '@/components/public/ContactSectionClient';
+import ProductCard from '@/components/public/ProductCard';
+import { getAllProducts } from '@/app/models/product.model';
 
 export const metadata: Metadata = {
   title: 'PakSolarTech — #1 Solar Energy Company in Pakistan',
@@ -57,17 +59,19 @@ const stats = [
 ];
 
 /* ══════════════ HOME PAGE ══════════════ */
-export default function Home() {
+export default async function Home() {
+  const allProducts = await getAllProducts({ activeOnly: true });
+  const featuredProducts = allProducts.filter(p => p.is_featured).slice(0, 4);
+
   return (
     <>
-      <Header />
       <main>
         <HeroSection />
+        {featuredProducts.length > 0 && <FeaturedProductsSection products={featuredProducts} />}
         <ServicesSection />
         <AboutSection />
         <ContactSection />
       </main>
-      <Footer />
     </>
   );
 }
@@ -146,6 +150,42 @@ function HeroSection() {
               <Zap className="h-6 w-6 text-chart-2" />
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ──────────────── FEATURED PRODUCTS ──────────────── */
+function FeaturedProductsSection({ products }: { products: any[] }) {
+  return (
+    <section className="section-padding bg-muted/20">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="max-w-2xl">
+            <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
+              <Sparkles className="h-3.5 w-3.5" />
+              Top Rated Panels
+            </Badge>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+              Featured <span className="text-gradient">Products</span>
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              Our hand-picked selection of high-efficiency solar panels and components for optimal energy yield.
+            </p>
+          </div>
+          <Link href="/products">
+            <Button variant="ghost" className="gap-2 text-primary hover:text-primary hover:bg-primary/5">
+              View All Products
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {products.map((p) => (
+            <ProductCard key={p.id} product={p} />
+          ))}
         </div>
       </div>
     </section>
