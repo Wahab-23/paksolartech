@@ -1,10 +1,7 @@
 'use client';
-
 import React, { useState, useEffect, useCallback } from 'react';
-import { Editor, Frame, Element } from '@craftjs/core';
+import { Editor, Frame, Element, useEditor } from '@craftjs/core';
 import { Text, Container, Button, Image, Video, RawHtml } from '../selectors';
-import { Toolbox } from './Toolbox';
-import { SettingsPanel } from './SettingsPanel';
 import { EditorTopbar } from './EditorTopbar';
 import { createPortal } from 'react-dom';
 
@@ -12,6 +9,58 @@ interface CraftEditorProps {
     initialData?: string;
     onNodesChange?: (data: string) => void;
 }
+
+const Workspace = ({ 
+    parsedData 
+}: { 
+    parsedData: any
+}) => {
+    return (
+        <main className="flex-1 overflow-y-auto bg-white dark:bg-[#1c1c1f]" id="craft-canvas-container">
+            <div className="min-h-full overflow-hidden">
+                <Frame data={parsedData}>
+                    {!parsedData && (
+                        <Element is={Container} padding={20} canvas>
+                            <Text text="Start building. Click 'Blocks' in the top bar to add elements." />
+                        </Element>
+                    )}
+                </Frame>
+            </div>
+        </main>
+    );
+};
+
+const EditorWrapper = ({ 
+    isFullscreen, 
+    parsedData, 
+    toggleFullscreen 
+}: { 
+    isFullscreen: boolean, 
+    parsedData: any, 
+    toggleFullscreen: () => void 
+}) => {
+    return (
+        <div
+            className={
+                isFullscreen
+                    ? 'fixed inset-0 z-[9999] flex flex-col bg-[#0f0f11]'
+                    : 'flex flex-col border border-border/50 rounded-xl overflow-hidden bg-[#0f0f11]'
+            }
+            style={isFullscreen ? undefined : { minHeight: 700 }}
+        >
+            <EditorTopbar 
+                isFullscreen={isFullscreen} 
+                onToggleFullscreen={toggleFullscreen}
+            />
+
+            <div className="flex flex-1 overflow-hidden">
+                <Workspace 
+                    parsedData={parsedData}
+                />
+            </div>
+        </div>
+    );
+};
 
 export const CraftEditor = ({ initialData, onNodesChange }: CraftEditorProps) => {
     const [isFullscreen, setIsFullscreen] = useState(false);
@@ -84,43 +133,11 @@ export const CraftEditor = ({ initialData, onNodesChange }: CraftEditorProps) =>
                 }
             }}
         >
-            <div
-                className={
-                    isFullscreen
-                        ? 'fixed inset-0 z-[9999] flex flex-col bg-[#0f0f11]'
-                        : 'flex flex-col border border-border/50 rounded-xl overflow-hidden bg-[#0f0f11]'
-                }
-                style={isFullscreen ? undefined : { minHeight: 700 }}
-            >
-                {/* ── Top Bar ── */}
-                <EditorTopbar isFullscreen={isFullscreen} onToggleFullscreen={toggleFullscreen} />
-
-                {/* ── Body ── */}
-                <div className="flex flex-1 overflow-hidden">
-                    {/* Left Toolbox Panel */}
-                    <aside className="w-[220px] shrink-0 border-r border-white/10 bg-[#18181b] flex flex-col overflow-y-auto">
-                        <Toolbox />
-                    </aside>
-
-                    {/* Canvas */}
-                    <main className="flex-1 overflow-y-auto" id="craft-canvas-container">
-                        <div className="bg-white dark:bg-[#1c1c1f] min-h-full overflow-hidden">
-                            <Frame data={parsedData}>
-                                {!parsedData && (
-                                    <Element is={Container} padding={20} canvas>
-                                        <Text text="Start building your blog post. Drag blocks from the left panel." />
-                                    </Element>
-                                )}
-                            </Frame>
-                        </div>
-                    </main>
-
-                    {/* Right Settings Panel */}
-                    <aside className="w-[280px] shrink-0 border-l border-white/10 bg-[#18181b] flex flex-col overflow-hidden">
-                        <SettingsPanel />
-                    </aside>
-                </div>
-            </div>
+            <EditorWrapper 
+                isFullscreen={isFullscreen}
+                parsedData={parsedData}
+                toggleFullscreen={toggleFullscreen}
+            />
         </Editor>
     );
 

@@ -15,51 +15,53 @@ export const TextSettings = () => {
   }));
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="grid gap-2 text-white">
-        <Label>Font Size (px)</Label>
+    <div className="flex items-center gap-6 overflow-visible">
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Size</span>
         <Input
           type="number"
           value={fontSize || 16}
           onChange={(e) => setProp((props: any) => props.fontSize = Number(e.target.value))}
-          className="border-white/20 bg-[#1e1e24] text-white"
+          className="h-7 w-14 border-white/10 bg-white/5 text-white text-xs px-1"
         />
       </div>
-      <div className="grid gap-2 text-white">
-        <Label>HTML Tag</Label>
+      
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Tag</span>
         <select
-          className="flex h-9 w-full rounded-md border border-white/20 bg-[#1e1e24] text-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="h-7 rounded border border-white/10 bg-white/5 text-white px-1 text-[11px] focus:outline-none"
           value={tagName || 'p'}
           onChange={(e) => setProp((props: any) => props.tagName = e.target.value)}
         >
-          <option value="h1">Heading 1 (h1)</option>
-          <option value="h2">Heading 2 (h2)</option>
-          <option value="h3">Heading 3 (h3)</option>
-          <option value="h4">Heading 4 (h4)</option>
-          <option value="h5">Heading 5 (h5)</option>
-          <option value="h6">Heading 6 (h6)</option>
+          <option value="p">P</option>
+          <option value="h1">H1</option>
+          <option value="h2">H2</option>
+          <option value="h3">H3</option>
+          <option value="h4">H4</option>
+          <option value="h5">H5</option>
+          <option value="h6">H6</option>
         </select>
       </div>
-      <div className="grid gap-2 text-white">
-        <Label>Font Weight</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Weight</span>
         <select
-          className="flex h-9 w-full rounded-md border border-white/20 bg-[#1e1e24] text-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="h-7 rounded border border-white/10 bg-white/5 text-white px-1 text-[11px] focus:outline-none"
           value={fontWeight || 'normal'}
           onChange={(e) => setProp((props: any) => props.fontWeight = e.target.value)}
         >
           <option value="normal">Normal</option>
           <option value="bold">Bold</option>
-          <option value="100">100</option>
-          <option value="300">300</option>
-          <option value="500">500</option>
-          <option value="700">700</option>
-          <option value="900">900</option>
+          <option value="300">Light</option>
+          <option value="500">Medium</option>
+          <option value="700">Boldest</option>
         </select>
       </div>
-      <div className="grid gap-2 text-white">
-        <Label>Text Align</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Align</span>
         <select
-          className="flex h-9 w-full rounded-md border border-white/20 bg-[#1e1e24] text-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="h-7 rounded border border-white/10 bg-white/5 text-white px-1 text-[11px] focus:outline-none"
           value={textAlign || 'left'}
           onChange={(e) => setProp((props: any) => props.textAlign = e.target.value)}
         >
@@ -69,13 +71,14 @@ export const TextSettings = () => {
           <option value="justify">Justify</option>
         </select>
       </div>
-      <div className="grid gap-2 text-white">
-        <Label>Color</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Color</span>
         <Input
           type="color"
           value={color || '#ffffff'}
           onChange={(e) => setProp((props: any) => props.color = e.target.value)}
-          className="h-10 px-1 py-1"
+          className="h-7 w-8 p-0.5 border-none bg-transparent"
         />
       </div>
     </div>

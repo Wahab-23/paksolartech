@@ -14,59 +14,66 @@ export const ImageSettings = () => {
   }));
 
   return (
-    <div className="flex flex-col gap-4 text-white/80">
-      <div className="grid gap-2">
-        <Label>Image URL (src)</Label>
+    <div className="flex items-center gap-6 overflow-visible">
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Src</span>
         <Input
           value={src || ''}
           onChange={(e) => setProp((props: any) => props.src = e.target.value)}
-          placeholder="https://..."
+          placeholder="URL"
+          className="h-7 w-32 border-white/10 bg-white/5 text-white text-[11px] px-1"
         />
       </div>
-      <div className="grid gap-2">
-        <Label>Alt Text</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Alt</span>
         <Input
           value={alt || ''}
           onChange={(e) => setProp((props: any) => props.alt = e.target.value)}
+          placeholder="Alt"
+          className="h-7 w-20 border-white/10 bg-white/5 text-white text-[11px] px-1"
         />
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div className="grid gap-2">
-          <Label>Width</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Size</span>
+        <div className="flex items-center gap-1">
           <Input
             value={width || ''}
             onChange={(e) => setProp((props: any) => props.width = e.target.value)}
-            placeholder="100% or 400px"
+            placeholder="W"
+            className="h-7 w-12 border-white/10 bg-white/5 text-white text-[11px] px-1 text-center"
           />
-        </div>
-        <div className="grid gap-2">
-          <Label>Height</Label>
           <Input
             value={height || ''}
             onChange={(e) => setProp((props: any) => props.height = e.target.value)}
-            placeholder="auto or 300px"
+            placeholder="H"
+            className="h-7 w-12 border-white/10 bg-white/5 text-white text-[11px] px-1 text-center"
           />
         </div>
       </div>
-      <div className="grid gap-2">
-        <Label>Object Fit</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Fit</span>
         <select
-          className="flex h-9 w-full rounded-md border border-white/20 bg-[#1e1e24] text-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="h-7 rounded border border-white/10 bg-white/5 text-white px-1 text-[11px] focus:outline-none"
           value={objectFit || 'cover'}
           onChange={(e) => setProp((props: any) => props.objectFit = e.target.value)}
         >
           <option value="fill">Fill</option>
-          <option value="contain">Contain</option>
-          <option value="cover">Cover</option>
+          <option value="contain">Cont</option>
+          <option value="cover">Cov</option>
           <option value="none">None</option>
         </select>
       </div>
-      <div className="grid gap-2">
-        <Label>Border Radius (px)</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Rad</span>
         <Input
           type="number"
           value={borderRadius || 0}
           onChange={(e) => setProp((props: any) => props.borderRadius = Number(e.target.value))}
+          className="h-7 w-12 border-white/10 bg-white/5 text-white text-xs px-1 text-center"
         />
       </div>
     </div>

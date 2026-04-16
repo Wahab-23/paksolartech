@@ -24,6 +24,21 @@ export interface Product extends RowDataPacket {
     created_at: Date;
 }
 
+// Only the fields needed for the homepage featured products grid.
+export type FeaturedProduct = Pick<
+    Product,
+    | "id"
+    | "name"
+    | "slug"
+    | "short_desc"
+    | "image_url"
+    | "price_from"
+    | "badge"
+    | "brand"
+    | "wattage"
+> &
+    RowDataPacket;
+
 export interface Category extends RowDataPacket {
     id: number;
     name: string;
@@ -66,6 +81,29 @@ export async function getAllProducts({ activeOnly = false } = {}): Promise<Produ
         ? 'SELECT * FROM products WHERE status = "active"'
         : 'SELECT * FROM products';
     const [rows] = await db.query<Product[]>(query);
+    return rows;
+}
+
+export async function getFeaturedProducts({ limit = 4 } = {}): Promise<FeaturedProduct[]> {
+    // Fetch only featured+active products to avoid loading large JSON columns
+    // and doing in-memory filtering on every homepage request.
+    const query = `
+        SELECT
+            id,
+            name,
+            slug,
+            short_desc,
+            image_url,
+            price_from,
+            badge,
+            brand,
+            wattage
+        FROM products
+        WHERE status = "active" AND is_featured = 1
+        ORDER BY id DESC
+        LIMIT ?
+    `;
+    const [rows] = await db.query<FeaturedProduct[]>(query, [limit]);
     return rows;
 }
 

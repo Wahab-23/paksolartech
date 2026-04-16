@@ -12,40 +12,42 @@ export const VideoSettings = () => {
   }));
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="grid gap-2">
-        <Label>YouTube / Vimeo Embed URL</Label>
+    <div className="flex items-center gap-6 overflow-visible">
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Src</span>
         <Input 
           value={src || ''} 
           onChange={(e) => setProp((props: any) => props.src = e.target.value)} 
-          placeholder="https://www.youtube.com/embed/..."
+          placeholder="Embed URL"
+          className="h-7 w-48 border-white/10 bg-white/5 text-white text-[11px] px-1"
         />
-        <p className="text-xs text-white/40">Make sure to use the embed URL, not the watch URL.</p>
       </div>
-      <div className="grid grid-cols-2 gap-2">
-        <div className="grid gap-2">
-          <Label>Width</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Size</span>
+        <div className="flex items-center gap-1">
           <Input 
             value={width || ''} 
             onChange={(e) => setProp((props: any) => props.width = e.target.value)} 
-            placeholder="100% or 560px"
+            placeholder="W"
+            className="h-7 w-12 border-white/10 bg-white/5 text-white text-[11px] px-1 text-center"
           />
-        </div>
-        <div className="grid gap-2">
-          <Label>Height</Label>
           <Input 
             value={height || ''} 
             onChange={(e) => setProp((props: any) => props.height = e.target.value)} 
-            placeholder="315px"
+            placeholder="H"
+            className="h-7 w-12 border-white/10 bg-white/5 text-white text-[11px] px-1 text-center"
           />
         </div>
       </div>
-      <div className="grid gap-2">
-        <Label>Border Radius (px)</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Rad</span>
         <Input 
           type="number"
           value={borderRadius || 0} 
           onChange={(e) => setProp((props: any) => props.borderRadius = Number(e.target.value))} 
+          className="h-7 w-12 border-white/10 bg-white/5 text-white text-xs px-1 text-center"
         />
       </div>
     </div>

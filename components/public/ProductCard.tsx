@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,9 +17,10 @@ interface ProductCardProps {
     brand: string | null;
     wattage: number | null;
   };
+  priority?: boolean;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, priority = false }: ProductCardProps) {
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-xl hover:shadow-primary/5">
       {/* Badge */}
@@ -49,7 +48,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             <ProductImage
               src={displayImage}
               alt={product.name}
-              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="h-full w-full"
+              priority={priority}
             />
           );
         })()}
@@ -83,7 +83,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <div>
             <p className="text-xs text-muted-foreground font-medium">Starting from</p>
             <p className="text-xl font-bold text-primary">
-              Rs. {product.price_from.toLocaleString()}
+              Rs. {(product.price_from ?? 0).toLocaleString()}
             </p>
           </div>
           <Link href={`/products/${product.slug}`}>

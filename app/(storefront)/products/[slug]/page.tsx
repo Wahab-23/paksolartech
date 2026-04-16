@@ -46,7 +46,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   } catch (e) {
     images = [];
   }
-  
+
   // If no multiple images found, fallback to legacy image_url
   if (images.length === 0 && product.image_url) {
     images = [product.image_url];
@@ -111,10 +111,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                   Price Estimate
                 </p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-black text-primary">Rs. {product.price_from.toLocaleString()}</span>
+                  <span className="text-4xl font-black text-primary">Rs. {(product.price_from ?? 0).toLocaleString()}</span>
                   {product.price_to && (
                     <span className="text-xl text-muted-foreground border-l border-border/50 pl-2">
-                      to Rs. {product.price_to.toLocaleString()}
+                      to Rs. {(product.price_to ?? 0).toLocaleString()}
                     </span>
                   )}
                 </div>
@@ -182,7 +182,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                       {product.description || 'Detailed description coming soon...'}
                     </p>
                   )}
-                </div>
+                </div>{/* 
 
                 <ul className="mt-8 space-y-4">
                   {[
@@ -196,7 +196,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                       <span>{benefit}</span>
                     </li>
                   ))}
-                </ul>
+                </ul> */}
               </div>
 
               {/* Specs Sidebar */}

@@ -7,9 +7,10 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import HeroButtons from '@/components/public/HeroButtons';
-import ContactSectionClient from '@/components/public/ContactSectionClient';
 import ProductCard from '@/components/public/ProductCard';
-import { getAllProducts } from '@/app/models/product.model';
+import { getFeaturedProducts, type FeaturedProduct } from '@/app/models/product.model';
+import SolarCalculatorClient from '@/components/calculator/SolarCalculatorClient';
+import DeferredContactSection from '@/components/public/DeferredContactSection';
 
 export const metadata: Metadata = {
   title: 'PakSolarTech — #1 Solar Energy Company in Pakistan',
@@ -60,13 +61,23 @@ const stats = [
 
 /* ══════════════ HOME PAGE ══════════════ */
 export default async function Home() {
-  const allProducts = await getAllProducts({ activeOnly: true });
-  const featuredProducts = allProducts.filter(p => p.is_featured).slice(0, 4);
+  const featuredProducts = await getFeaturedProducts({ limit: 4 });
 
   return (
     <>
-      <main>
+      <main className="relative overflow-hidden">
+        <div
+          className="pointer-events-none fixed inset-0 -z-10 opacity-30"
+          style={{
+            backgroundImage:
+              'url("data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%27200%27 height=%27200%27 viewBox=%270 0 200 200%27%3E%3Cpath d=%27M0 0h200M0 40h200M0 80h200M0 120h200M0 160h200M0 200h200M0 0v200M40 0v200M80 0v200M120 0v200M160 0v200M200 0v200%27 fill=%27none%27 stroke=%27rgba(15%2C23%2C42%2C0.08)%27 stroke-width=%271%27/%3E%3C/svg%3E")',
+            backgroundRepeat: 'repeat',
+            backgroundSize: '200px 200px',
+            backgroundPosition: '0 0',
+          }}
+        />
         <HeroSection />
+        <CalculatorSection />
         {featuredProducts.length > 0 && <FeaturedProductsSection products={featuredProducts} />}
         <ServicesSection />
         <AboutSection />
@@ -81,11 +92,11 @@ function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background Effects */}
-      <div className="absolute inset-0">
+      {/* <div className="absolute inset-0">
         <div className="absolute left-1/4 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute right-1/4 bottom-1/4 h-[400px] w-[400px] rounded-full bg-chart-2/5 blur-[100px]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,var(--background)_70%)]" />
-      </div>
+      </div> */}
 
       {/* Grid pattern overlay */}
       <div className="absolute inset-0 opacity-[0.03]"
@@ -97,17 +108,17 @@ function HeroSection() {
 
       <div className="relative mx-auto max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
         <div className="max-w-3xl">
-          <Badge variant="outline" className="mb-6 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary animate-fade-in">
+          <Badge variant="outline" className="mb-6 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
             <Sparkles className="h-3.5 w-3.5" />
             Pakistan&apos;s #1 Solar Energy Company
           </Badge>
 
-          <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-7xl animate-slide-up">
+          <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-7xl">
             Harness The <br />
             <span className="text-gradient">Power Of The Sun</span>
           </h1>
 
-          <p className="mb-8 max-w-xl text-lg leading-relaxed text-muted-foreground animate-slide-up" style={{ animationDelay: '200ms' }}>
+          <p className="mb-8 max-w-xl text-lg leading-relaxed text-muted-foreground">
             Transform your energy future with cutting-edge solar technology.
             Save up to 90% on electricity bills while contributing to a greener Pakistan.
           </p>
@@ -115,7 +126,7 @@ function HeroSection() {
           <HeroButtons />
 
           {/* Trust badges */}
-          <div className="mt-12 flex flex-wrap items-center gap-6 text-sm text-muted-foreground animate-fade-in" style={{ animationDelay: '600ms' }}>
+          <div className="mt-12 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-primary" />
               Free Site Survey
@@ -133,17 +144,15 @@ function HeroSection() {
 
         {/* Floating solar panel illustration */}
         <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden lg:block">
-          <div className="relative animate-float">
-            <div className="h-72 w-72 rounded-3xl border border-primary/20 bg-gradient-to-br from-primary/10 to-transparent p-8">
+          <div className="relative">
+            <div className="h-72 w-72 rounded-3xl border border-primary/20 bg-linear-to-br from-primary/10 to-transparent p-8">
               <div className="grid h-full w-full grid-cols-3 grid-rows-3 gap-2">
                 {Array.from({ length: 9 }).map((_, i) => (
-                  <div key={i} className="rounded-md bg-primary/20 transition-all hover:bg-primary/40"
-                    style={{ animationDelay: `${i * 100}ms` }}
-                  />
+                  <div key={i} className="rounded-md bg-primary/20 transition-colors hover:bg-primary/30" />
                 ))}
               </div>
             </div>
-            <div className="absolute -bottom-4 -left-4 h-20 w-20 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 flex items-center justify-center animate-pulse-glow">
+            <div className="absolute -bottom-4 -left-4 flex h-20 w-20 items-center justify-center rounded-2xl border border-yellow-400/30 bg-yellow-400/10">
               <Sun className="h-8 w-8 text-yellow-400" />
             </div>
             <div className="absolute -right-4 -top-4 h-16 w-16 rounded-2xl border border-chart-2/30 bg-chart-2/10 flex items-center justify-center">
@@ -156,8 +165,23 @@ function HeroSection() {
   );
 }
 
+/* ──────────────── CALCULATOR ──────────────── */
+function CalculatorSection() {
+  return (
+    <section className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
+      <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Calculate Your Savings</h2>
+      <p className="mt-4 text-muted-foreground">
+        Enter your average monthly electricity bill to estimate the ideal solar system size for your home.
+      </p>
+      <SolarCalculatorClient />
+    </section>
+  );
+}
+
+
+
 /* ──────────────── FEATURED PRODUCTS ──────────────── */
-function FeaturedProductsSection({ products }: { products: any[] }) {
+function FeaturedProductsSection({ products }: { products: FeaturedProduct[] }) {
   return (
     <section className="section-padding bg-muted/20">
       <div className="mx-auto max-w-7xl">
@@ -196,7 +220,7 @@ function FeaturedProductsSection({ products }: { products: any[] }) {
 function ServicesSection() {
   return (
     <section id="services" className="section-padding relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
+      <div className="absolute" />
 
       <div className="relative mx-auto max-w-7xl">
         <div className="mb-12 text-center">
@@ -296,7 +320,7 @@ function AboutSection() {
 function ContactSection() {
   return (
     <section id="contact" className="section-padding relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-card/30 to-background" />
+      <div className="absolute inset-0 bg-linear-to-b from-background via-card/30 to-background" />
 
       <div className="relative mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-2">
@@ -337,10 +361,9 @@ function ContactSection() {
           </div>
 
           {/* Right — Form (Client Component) */}
-          <ContactSectionClient />
+          <DeferredContactSection />
         </div>
       </div>
     </section>
   );
 }
-

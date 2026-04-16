@@ -13,42 +13,53 @@ export const ContainerSettings = () => {
   }));
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="grid gap-2">
-        <Label>Background Color</Label>
-        <Input 
-          type="color" 
-          value={background || 'transparent'} 
-          onChange={(e) => setProp((props: any) => props.background = e.target.value)} 
-          className="h-10 px-1 py-1"
-        />
-        <div className="flex gap-2 mt-1">
-           <button type="button" onClick={() => setProp((p: any) => p.background = 'transparent')} className="text-xs text-white/40 hover:text-white hover:underline transition-colors">Clear Background</button>
+    <div className="flex items-center gap-6 overflow-visible">
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Bg</span>
+        <div className="flex items-center gap-1">
+          <Input 
+            type="color" 
+            value={background || '#ffffff'} 
+            onChange={(e) => setProp((props: any) => props.background = e.target.value)} 
+            className="h-7 w-8 p-0.5 border-none bg-transparent"
+          />
+          <button 
+            type="button" 
+            onClick={() => setProp((p: any) => p.background = 'transparent')} 
+            className="text-[9px] text-white/40 hover:text-white"
+            title="Clear Background"
+          >
+            Clear
+          </button>
         </div>
       </div>
-      <div className="grid gap-2">
-        <Label>Padding (px)</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Pad</span>
         <Input 
           type="number" 
           value={padding || 0} 
           onChange={(e) => setProp((props: any) => props.padding = Number(e.target.value))} 
+          className="h-7 w-12 border-white/10 bg-white/5 text-white text-xs px-1"
         />
       </div>
-      <div className="grid gap-2">
-        <Label>Direction</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Dir</span>
         <select 
-          className="flex h-9 w-full rounded-md border border-white/20 bg-[#1e1e24] text-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="h-7 rounded border border-white/10 bg-white/5 text-white px-1 text-[11px] focus:outline-none"
           value={flexDirection || 'column'}
           onChange={(e) => setProp((props: any) => props.flexDirection = e.target.value)}
         >
-          <option value="column">Column</option>
+          <option value="column">Col</option>
           <option value="row">Row</option>
         </select>
       </div>
-      <div className="grid gap-2">
-        <Label>Align Items</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Align</span>
         <select 
-          className="flex h-9 w-full rounded-md border border-white/20 bg-[#1e1e24] text-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="h-7 rounded border border-white/10 bg-white/5 text-white px-1 text-[11px] focus:outline-none"
           value={alignItems || 'flex-start'}
           onChange={(e) => setProp((props: any) => props.alignItems = e.target.value)}
         >
@@ -58,18 +69,19 @@ export const ContainerSettings = () => {
           <option value="stretch">Stretch</option>
         </select>
       </div>
-      <div className="grid gap-2">
-        <Label>Justify Content</Label>
+
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-bold text-white/40 uppercase">Justify</span>
         <select 
-          className="flex h-9 w-full rounded-md border border-white/20 bg-[#1e1e24] text-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
+          className="h-7 rounded border border-white/10 bg-white/5 text-white px-1 text-[11px] focus:outline-none"
           value={justifyContent || 'flex-start'}
           onChange={(e) => setProp((props: any) => props.justifyContent = e.target.value)}
         >
           <option value="flex-start">Start</option>
           <option value="center">Center</option>
           <option value="flex-end">End</option>
-          <option value="space-between">Space Between</option>
-          <option value="space-around">Space Around</option>
+          <option value="space-between">Betw</option>
+          <option value="space-around">Around</option>
         </select>
       </div>
     </div>
