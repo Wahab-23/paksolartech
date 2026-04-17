@@ -43,7 +43,7 @@ const EditorWrapper = ({
         <div
             className={
                 isFullscreen
-                    ? 'fixed inset-0 z-[9999] flex flex-col bg-[#0f0f11]'
+                    ? 'fixed inset-0 z-9999 flex flex-col bg-[#0f0f11]'
                     : 'flex flex-col border border-border/50 rounded-xl overflow-hidden bg-[#0f0f11]'
             }
             style={isFullscreen ? undefined : { minHeight: 700 }}
@@ -65,6 +65,7 @@ const EditorWrapper = ({
 export const CraftEditor = ({ initialData, onNodesChange }: CraftEditorProps) => {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         setMounted(true);
@@ -86,42 +87,47 @@ export const CraftEditor = ({ initialData, onNodesChange }: CraftEditorProps) =>
     let parsedData = initialData;
     let isLegacy = false;
 
-    if (initialData) {
-        try {
-            const obj = JSON.parse(initialData);
-            if (!obj || typeof obj !== 'object' || !obj.ROOT) {
+    try {
+        if (initialData) {
+            try {
+                const obj = JSON.parse(initialData);
+                if (!obj || typeof obj !== 'object' || !obj.ROOT) {
+                    isLegacy = true;
+                }
+            } catch {
                 isLegacy = true;
             }
-        } catch {
-            isLegacy = true;
-        }
 
-        if (isLegacy) {
-            const fallbackJSON = {
-                "ROOT": {
-                    "type": { "resolvedName": "Container" },
-                    "isCanvas": true,
-                    "props": { "background": "transparent", "padding": 20, "flexDirection": "column", "alignItems": "flex-start", "justifyContent": "flex-start" },
-                    "displayName": "Container",
-                    "custom": {},
-                    "hidden": false,
-                    "nodes": ["node_legacy_text"],
-                    "linkedNodes": {}
-                },
-                "node_legacy_text": {
-                    "type": { "resolvedName": "Text" },
-                    "isCanvas": false,
-                    "props": { "text": initialData, "fontSize": 16, "textAlign": "left", "fontWeight": "normal", "color": "inherit" },
-                    "displayName": "Text",
-                    "custom": {},
-                    "hidden": false,
-                    "nodes": [],
-                    "linkedNodes": {},
-                    "parent": "ROOT"
-                }
-            };
-            parsedData = JSON.stringify(fallbackJSON);
+            if (isLegacy) {
+                const fallbackJSON = {
+                    "ROOT": {
+                        "type": { "resolvedName": "Container" },
+                        "isCanvas": true,
+                        "props": { "background": "transparent", "padding": 20, "flexDirection": "column", "alignItems": "flex-start", "justifyContent": "flex-start" },
+                        "displayName": "Container",
+                        "custom": {},
+                        "hidden": false,
+                        "nodes": ["node_legacy_text"],
+                        "linkedNodes": {}
+                    },
+                    "node_legacy_text": {
+                        "type": { "resolvedName": "Text" },
+                        "isCanvas": false,
+                        "props": { "text": initialData, "fontSize": 16, "textAlign": "left", "fontWeight": "normal", "color": "inherit" },
+                        "displayName": "Text",
+                        "custom": {},
+                        "hidden": false,
+                        "nodes": [],
+                        "linkedNodes": {},
+                        "parent": "ROOT"
+                    }
+                };
+                parsedData = JSON.stringify(fallbackJSON);
+            }
         }
+    } catch (err) {
+        console.error("Error processing CraftEditor data:", err);
+        setError("Failed to initialize editor data");
     }
 
     const editorContent = (
@@ -129,7 +135,11 @@ export const CraftEditor = ({ initialData, onNodesChange }: CraftEditorProps) =>
             resolver={{ Text, Container, Button, Image, Video, RawHtml }}
             onNodesChange={(query) => {
                 if (onNodesChange) {
-                    onNodesChange(query.serialize());
+                    try {
+                        onNodesChange(query.serialize());
+                    } catch (err) {
+                        console.error("Error serializing editor nodes:", err);
+                    }
                 }
             }}
         >
@@ -140,6 +150,17 @@ export const CraftEditor = ({ initialData, onNodesChange }: CraftEditorProps) =>
             />
         </Editor>
     );
+
+    if (error) {
+        return (
+            <div className="flex h-full items-center justify-center p-4 text-center text-red-500">
+                <div>
+                    <p className="font-semibold">{error}</p>
+                    <p className="text-sm text-muted-foreground mt-2">Please refresh the page</p>
+                </div>
+            </div>
+        );
+    }
 
     if (isFullscreen && mounted) {
         return createPortal(editorContent, document.body);

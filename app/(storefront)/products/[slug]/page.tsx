@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import ProductImage from '@/components/public/ProductImage';
-import { CraftRenderer } from '@/components/craft/CraftRenderer';
+import { LexicalRenderer } from '@/components/lexical/LexicalRenderer';
 import { ImageGallery } from '../../../../components/public/ImageGallery';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -175,7 +175,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                 <div className="text-muted-foreground text-lg leading-relaxed">
                   {product.description && product.description.includes('{') ? (
                     <div className="prose prose-invert max-w-none">
-                      <CraftRenderer data={product.description} />
+                      <LexicalRenderer data={product.description} />
                     </div>
                   ) : (
                     <p className="whitespace-pre-wrap">

@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowLeft, Newspaper } from 'lucide-react';
 import { getBlogBySlug } from '@/app/models/blog.model';
-import { CraftRenderer } from '@/components/craft/CraftRenderer';
+import { LexicalRenderer } from '@/components/lexical/LexicalRenderer';
 
 interface Props {
     params: Promise<{ slug: string }>;
@@ -72,7 +72,7 @@ export default async function BlogDetailPage({ params }: Props) {
                         )}
 
                         {/* Content */}
-                        <CraftRenderer data={blog.content} />
+                        <LexicalRenderer data={blog.content} />
                     </div>
                 </article>
             </main>

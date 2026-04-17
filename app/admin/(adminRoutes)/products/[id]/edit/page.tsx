@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { ArrowLeft, Loader2, Save, Package } from 'lucide-react';
-import { CraftEditor } from '@/components/craft/editor/CraftEditor';
+import { LexicalEditor, type LexicalEditorRef } from '@/components/lexical/LexicalEditor';
 import MultiImageUpload from '@/components/admin/MultiImageUpload';
 
 export default function EditProductPage() {
@@ -42,6 +42,7 @@ export default function EditProductPage() {
 
     const [images, setImages] = useState<string[]>([]);
     const [specs, setSpecs] = useState<{ label: string, value: string }[]>([]);
+    const editorRef = useRef<LexicalEditorRef>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -97,11 +98,15 @@ export default function EditProductPage() {
         e.preventDefault();
         setSaving(true);
         
+        // Get the latest content from the editor
+        const editorContent = editorRef.current?.getContent() || form.description;
+
         // Ensure image_url is synchronized with the first image in the array if empty
         const primaryImage = images.length > 0 ? images[0] : form.image_url;
 
         const payload = {
             ...form,
+            description: editorContent,
             image_url: primaryImage,
             images: images,
             price_from: parseFloat(form.price_from as string) || 0,
@@ -211,13 +216,14 @@ export default function EditProductPage() {
                         </div>
                     </div>
 
-                    {/* Rich Description (CraftJS) */}
-                    <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4 text-white">
+                    {/* Rich Description (Lexical) */}
+                    <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
                         <h2 className="font-semibold text-lg">Product Story & Full Description</h2>
-                        <div className="min-h-[400px] rounded-lg border border-border/50 bg-background/50 overflow-hidden text-black">
-                            <CraftEditor
-                                initialData={form.description}
-                                onNodesChange={(json: string) => setForm(prev => ({ ...prev, description: json }))}
+                        <div className="rounded-lg border border-border/50 bg-background/50 overflow-hidden text-foreground">
+                            <LexicalEditor
+                                ref={editorRef}
+                                initialContent={form.description}
+                                placeholder="Write a detailed product description..."
                             />
                         </div>
                     </div>

@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { ArrowLeft, Loader2, Upload, Image as ImageIcon, Pencil } from 'lucide-react';
-import { CraftEditor } from '@/components/craft/editor/CraftEditor';
+import { LexicalEditor, type LexicalEditorRef } from '@/components/lexical/LexicalEditor';
 
 interface Props {
     params: Promise<{ id: string }>;
@@ -34,6 +34,7 @@ export default function EditBlogPage({ params }: Props) {
 
     const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : '';
     const headers: HeadersInit = { Authorization: `Bearer ${token}` };
+    const editorRef = useRef<LexicalEditorRef>(null);
 
     useEffect(() => {
         fetch(`/api/blogs/${id}`, { headers })
@@ -75,12 +76,15 @@ export default function EditBlogPage({ params }: Props) {
             toast.error('Title and content are required');
             return;
         }
+        
+        const editorContent = editorRef.current?.getContent() || form.content;
+        
         setSubmitting(true);
         try {
             const res = await fetch(`/api/blogs/${id}`, {
                 method: 'PUT',
                 headers: { ...headers, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...form, cover_image: coverImage || null }),
+                body: JSON.stringify({ ...form, content: editorContent, cover_image: coverImage || null }),
             });
             if (res.ok) {
                 toast.success('Blog updated!');
@@ -212,12 +216,13 @@ export default function EditBlogPage({ params }: Props) {
                 </div>
             </div>
 
-            {/* ── CraftJS Editor lives OUTSIDE the form to prevent submit-on-drag ── */}
+            {/* ── Lexical Editor lives OUTSIDE the form to prevent submit-on-drag ── */}
             <div className="grid gap-2">
                 <Label className="text-sm font-medium">Content *</Label>
-                <CraftEditor
-                    initialData={form.content}
-                    onNodesChange={(json: string) => setForm(prev => ({ ...prev, content: json }))}
+                <LexicalEditor
+                    ref={editorRef}
+                    initialContent={form.content}
+                    placeholder="Write your blog post content..."
                 />
             </div>
         </div>
