@@ -9,8 +9,8 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import ProductImage from '@/components/public/ProductImage';
-import { LexicalRenderer } from '@/components/lexical/LexicalRenderer';
-import { ImageGallery } from '../../../../components/public/ImageGallery';
+import BlockNoteRenderer from '@/components/blocknote/BlockNoteRenderer';
+import { ImageGallery } from '@/components/public/ImageGallery';
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -173,9 +173,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                   Product Story
                 </h3>
                 <div className="text-muted-foreground text-lg leading-relaxed">
-                  {product.description && product.description.includes('{') ? (
+                  {product.description && product.description.trim() ? (
                     <div className="prose prose-invert max-w-none">
-                      <LexicalRenderer data={product.description} />
+                      <BlockNoteRenderer data={product.description} />
                     </div>
                   ) : (
                     <p className="whitespace-pre-wrap">

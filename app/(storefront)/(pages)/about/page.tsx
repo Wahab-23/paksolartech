@@ -1,9 +1,10 @@
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
 
+
 export default function AboutPage() {
   return (
     <div className="container">
-        <div className="relative mx-auto max-w-6xl px-4 pt-32 sm:px-6 lg:px-8">
+        <div className="relative mx-auto max-w-5xl px-4 pt-32 sm:px-6 lg:px-8">
         <h1 className="text-4xl font-bold mb-6 text-gradient">About Us</h1>
         <p className="text-md mb-4">
             At PakSolarTech, we are committed to providing top-notch solar energy solutions to our customers across Pakistan. With years of experience in the industry, we have established ourselves as a trusted name in solar panel installations, maintenance, and consulting services.
@@ -18,7 +19,7 @@ export default function AboutPage() {
             Join us in our mission to create a sustainable future by embracing solar energy. Contact us today to learn more about our services and how we can help you make the switch to clean, renewable energy.
         </p>
         </div>
-        <div className="relative mx-auto max-w-6xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="relative mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
             <h2 className="text-2xl font-bold mb-6">
                 Frequently <i className="text-gradient">Asked</i> Questions
             </h2>

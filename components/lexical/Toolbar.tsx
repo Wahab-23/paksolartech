@@ -22,6 +22,8 @@ import {
   Redo2,
   Link,
   Strikethrough,
+  Image,
+  Heading1
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';

@@ -25,6 +25,12 @@ interface LexicalEditorProps {
 const editorConfig = {
   namespace: 'PakSolarTechEditor',
   theme: {
+    H1: 'text-2xl font-bold mb-4',
+    H2: 'text-xl font-bold mb-3',
+    H3: 'text-lg font-bold mb-2',
+    H4: 'text-base font-bold mb-1',
+    H5: 'text-sm font-bold mb-1',
+    H6: 'text-xs font-bold mb-1',
     paragraph: 'text-base leading-relaxed text-gray-800 dark:text-gray-200 mb-2',
     list: {
       nested: {

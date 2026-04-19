@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { ArrowLeft, Loader2, Save, Package } from 'lucide-react';
-import { LexicalEditor, type LexicalEditorRef } from '@/components/lexical/LexicalEditor';
+import BlockNoteEditor, { type BlockNoteEditorRef } from '@/components/blocknote/blocknoteEditor';
 import MultiImageUpload from '@/components/admin/MultiImageUpload';
 
 export default function EditProductPage() {
@@ -42,7 +42,7 @@ export default function EditProductPage() {
 
     const [images, setImages] = useState<string[]>([]);
     const [specs, setSpecs] = useState<{ label: string, value: string }[]>([]);
-    const editorRef = useRef<LexicalEditorRef>(null);
+    const editorRef = useRef<BlockNoteEditorRef>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -97,9 +97,9 @@ export default function EditProductPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
-        
+
         // Get the latest content from the editor
-        const editorContent = editorRef.current?.getContent() || form.description;
+        const editorContent = editorRef.current ? await editorRef.current.getContent() : form.description;
 
         // Ensure image_url is synchronized with the first image in the array if empty
         const primaryImage = images.length > 0 ? images[0] : form.image_url;
@@ -180,20 +180,20 @@ export default function EditProductPage() {
                         <div className="grid gap-4">
                             <div className="grid gap-2">
                                 <Label>Product Name *</Label>
-                                <Input 
-                                    value={form.name} 
-                                    onChange={e => setForm({ ...form, name: e.target.value })} 
+                                <Input
+                                    value={form.name}
+                                    onChange={e => setForm({ ...form, name: e.target.value })}
                                     placeholder="e.g. Longi Hi-MO 6 Explorer"
-                                    required 
+                                    required
                                 />
                             </div>
                             <div className="grid gap-2">
                                 <Label>Short Description</Label>
-                                <Textarea 
-                                   value={form.short_desc} 
-                                   onChange={e => setForm({ ...form, short_desc: e.target.value })}
-                                   placeholder="A brief catchy summary for product cards..."
-                                   rows={2}
+                                <Textarea
+                                    value={form.short_desc}
+                                    onChange={e => setForm({ ...form, short_desc: e.target.value })}
+                                    placeholder="A brief catchy summary for product cards..."
+                                    rows={2}
                                 />
                             </div>
                         </div>
@@ -216,11 +216,11 @@ export default function EditProductPage() {
                         </div>
                     </div>
 
-                    {/* Rich Description (Lexical) */}
+                    {/* Rich Description (BlockNote) */}
                     <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
                         <h2 className="font-semibold text-lg">Product Story & Full Description</h2>
                         <div className="rounded-lg border border-border/50 bg-background/50 overflow-hidden text-foreground">
-                            <LexicalEditor
+                            <BlockNoteEditor
                                 ref={editorRef}
                                 initialContent={form.description}
                                 placeholder="Write a detailed product description..."
@@ -234,26 +234,26 @@ export default function EditProductPage() {
                         <div className="space-y-3">
                             {specs.map((spec, i) => (
                                 <div key={i} className="flex gap-4 items-center">
-                                    <Input 
-                                        placeholder="Label (e.g. Efficiency)" 
-                                        value={spec.label} 
+                                    <Input
+                                        placeholder="Label (e.g. Efficiency)"
+                                        value={spec.label}
                                         onChange={e => {
                                             const newSpecs = [...specs]; newSpecs[i].label = e.target.value; setSpecs(newSpecs);
-                                        }} 
+                                        }}
                                         className="flex-1"
                                     />
-                                    <Input 
-                                        placeholder="Value (e.g. 22.5%)" 
-                                        value={spec.value} 
+                                    <Input
+                                        placeholder="Value (e.g. 22.5%)"
+                                        value={spec.value}
                                         onChange={e => {
                                             const newSpecs = [...specs]; newSpecs[i].value = e.target.value; setSpecs(newSpecs);
-                                        }} 
+                                        }}
                                         className="flex-1"
                                     />
-                                    <Button 
-                                        type="button" 
-                                        variant="ghost" 
-                                        size="icon" 
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon"
                                         onClick={() => setSpecs(specs.filter((_, idx) => idx !== i))}
                                         className="text-muted-foreground hover:text-destructive"
                                     >
@@ -273,9 +273,9 @@ export default function EditProductPage() {
                     {/* Media Management */}
                     <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
                         <h2 className="font-semibold text-lg">Product Media</h2>
-                        <MultiImageUpload 
-                            images={images} 
-                            onChange={(newImages) => setImages(newImages)} 
+                        <MultiImageUpload
+                            images={images}
+                            onChange={(newImages) => setImages(newImages)}
                         />
                     </div>
 
@@ -323,11 +323,11 @@ export default function EditProductPage() {
                             </div>
                             <div className="grid gap-2">
                                 <Label>Meta Description</Label>
-                                <Textarea 
-                                   value={form.meta_description} 
-                                   onChange={e => setForm({ ...form, meta_description: e.target.value })} 
-                                   placeholder="Search engine snippet..."
-                                   rows={3}
+                                <Textarea
+                                    value={form.meta_description}
+                                    onChange={e => setForm({ ...form, meta_description: e.target.value })}
+                                    placeholder="Search engine snippet..."
+                                    rows={3}
                                 />
                             </div>
                             <div className="grid gap-2">

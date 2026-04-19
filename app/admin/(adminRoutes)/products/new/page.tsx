@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import BlockNoteEditor, { type BlockNoteEditorRef } from '@/components/blocknote/blocknoteEditor';
 
 export default function NewProductPage() {
     const router = useRouter();
@@ -34,12 +35,18 @@ export default function NewProductPage() {
     });
 
     const [specs, setSpecs] = useState([{ label: '', value: '' }]);
+    const editorRef = useRef<BlockNoteEditorRef>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
+        
+        // Get the latest content from the editor
+        const editorContent = editorRef.current ? await editorRef.current.getContent() : form.description;
+        
         const payload = {
             ...form,
+            description: editorContent,
             price_from: parseFloat(form.price_from) || 0,
             price_to: parseFloat(form.price_to) || null,
             wattage: parseInt(form.wattage) || null,
@@ -100,6 +107,18 @@ export default function NewProductPage() {
                             <Label>Wattage</Label>
                             <Input type="number" value={form.wattage} onChange={e => setForm({...form, wattage: e.target.value})} />
                         </div>
+                    </div>
+                </div>
+
+                {/* Rich Description (BlockNote) */}
+                <div className="rounded-xl border border-border/50 bg-card/80 p-6 space-y-4">
+                    <h2 className="font-semibold text-lg border-b border-border/50 pb-2">Product Story & Full Description</h2>
+                    <div className="rounded-lg border border-border/50 bg-background/50 overflow-hidden text-foreground">
+                        <BlockNoteEditor
+                            ref={editorRef}
+                            initialContent=""
+                            placeholder="Write a detailed product description..."
+                        />
                     </div>
                 </div>
 
