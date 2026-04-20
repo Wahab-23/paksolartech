@@ -19,8 +19,8 @@ export default async function AllProductsPage() {
       <main className="min-h-screen bg-background">
         <div className="relative overflow-hidden bg-muted/30 border-b border-border/50 py-16 sm:py-24">
           <div className="absolute inset-0">
-            <div className="absolute left-1/4 top-1/4 h-[300px] w-[300px] rounded-full bg-primary/5 blur-[80px]" />
-            <div className="absolute right-1/4 bottom-1/4 h-[250px] w-[250px] rounded-full bg-chart-2/5 blur-[70px]" />
+            <div className="absolute left-1/4 top-1/4 h-75 w-62.5 rounded-full bg-primary/5 blur-[80px]" />
+            <div className="absolute right-1/4 bottom-1/4 h-62.5 w-62.5 rounded-full bg-chart-2/5 blur-[70px]" />
           </div>
           
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-center">

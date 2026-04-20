@@ -15,7 +15,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
     // Fallback if no images
     if (!images || images.length === 0) {
         return (
-            <div className="overflow-hidden rounded-3xl border border-border/50 bg-muted/30 aspect-[4/3]">
+            <div className="overflow-hidden rounded-3xl border border-border/50 bg-muted/30 aspect-4/3">
                 <ProductImage
                     src={null}
                     alt={productName}
@@ -28,7 +28,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
     return (
         <div className="space-y-4">
             {/* Main Image */}
-            <div className="overflow-hidden rounded-3xl border border-border/50 bg-muted/30 aspect-[4/3] relative group">
+            <div className="overflow-hidden rounded-3xl border border-border/50 bg-muted/30 aspect-4/3 relative group">
                 <ProductImage
                     src={images[activeIndex]}
                     alt={`${productName} - View ${activeIndex + 1}`}
@@ -44,7 +44,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
                             key={i}
                             onClick={() => setActiveIndex(i)}
                             className={cn(
-                                "relative aspect-square w-20 flex-shrink-0 overflow-hidden rounded-xl border-2 transition-all",
+                                "relative aspect-square w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all",
                                 activeIndex === i 
                                     ? "border-primary ring-2 ring-primary/20" 
                                     : "border-border/50 hover:border-primary/50"

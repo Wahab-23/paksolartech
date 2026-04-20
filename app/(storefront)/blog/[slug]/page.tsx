@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, ArrowLeft, Newspaper } from 'lucide-react';
 import { getBlogBySlug } from '@/app/models/blog.model';
-import { LexicalRenderer } from '@/components/lexical/LexicalRenderer';
+import BlockNoteRenderer from '@/components/blocknote/BlockNoteRenderer';
 
 interface Props {
     params: Promise<{ slug: string }>;
@@ -72,7 +72,7 @@ export default async function BlogDetailPage({ params }: Props) {
                         )}
 
                         {/* Content */}
-                        <LexicalRenderer data={blog.content} />
+                        <BlockNoteRenderer data={blog.content} />
                     </div>
                 </article>
             </main>

@@ -169,6 +169,14 @@ CREATE TABLE blogs (
     content LONGTEXT,
     cover_image VARCHAR(255),
     is_published BOOLEAN DEFAULT TRUE,
+    is_featured BOOLEAN DEFAULT FALSE,
+    author VARCHAR(100),
+    tags JSON,
+    meta_title VARCHAR(255),
+    meta_description TEXT,
+    meta_keywords TEXT,
+    reading_time INT DEFAULT 0,
+    published_at TIMESTAMP NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );

@@ -126,12 +126,12 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
               {/* Action Buttons */}
               <div className="mb-10 flex flex-wrap gap-4">
-                <Link href="/#contact" className="flex-1 min-w-[200px]">
+                <Link href="/#contact" className="flex-1 min-w-50">
                   <Button size="lg" className="w-full gap-2 h-14 text-lg">
                     <MessageSquare className="h-5 w-5" /> Request a Quote
                   </Button>
                 </Link>
-                <Button size="lg" variant="outline" className="flex-1 min-w-[200px] h-14 text-lg gap-2">
+                <Button size="lg" variant="outline" className="flex-1 min-w-50 h-14 text-lg gap-2">
                   <Phone className="h-5 w-5" /> Call for Inquiry
                 </Button>
               </div>

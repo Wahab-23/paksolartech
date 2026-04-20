@@ -12,6 +12,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://paksolartech.com"),
   title: "PakSolarTech — Premium Solar Energy Solutions",
   description:
     "Pakistan's leading solar energy company. Harness the power of the sun with our cutting-edge solar panel installations, maintenance, and consulting services.",

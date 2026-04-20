@@ -9,24 +9,76 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { ArrowLeft, Loader2, Upload, Image as ImageIcon, FileText } from 'lucide-react';
-import { LexicalEditor, type LexicalEditorRef } from '@/components/lexical/LexicalEditor';
+import { ArrowLeft, Loader2, Upload, Image as ImageIcon, FileText, Save, Calendar, Clock, Tag, User, Star } from 'lucide-react';
+import BlockNoteEditor, { type BlockNoteEditorRef } from '@/components/blocknote/blocknoteEditor';
 
 export default function NewBlogPage() {
     const router = useRouter();
     const fileRef = useRef<HTMLInputElement>(null);
     const [form, setForm] = useState({
         title: '',
+        slug: '',
         excerpt: '',
         content: '',
+        author: '',
         is_published: true,
+        is_featured: false,
+        meta_title: '',
+        meta_description: '',
+        meta_keywords: '',
+        reading_time: 0,
+        published_at: '',
+        tags: [] as string[],
     });
+    const [tagInput, setTagInput] = useState('');
     const [coverImage, setCoverImage] = useState('');
     const [uploading, setUploading] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
     const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : '';
-    const editorRef = useRef<LexicalEditorRef>(null);
+    const editorRef = useRef<BlockNoteEditorRef>(null);
+
+    // Auto-generate slug from title
+    const generateSlug = (title: string) => {
+        return title
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .trim();
+    };
+
+    const handleTitleChange = (title: string) => {
+        setForm(prev => ({
+            ...prev,
+            title,
+            slug: prev.slug || generateSlug(title)
+        }));
+    };
+
+    const addTag = () => {
+        if (tagInput.trim() && !form.tags.includes(tagInput.trim())) {
+            setForm(prev => ({
+                ...prev,
+                tags: [...prev.tags, tagInput.trim()]
+            }));
+            setTagInput('');
+        }
+    };
+
+    const removeTag = (tagToRemove: string) => {
+        setForm(prev => ({
+            ...prev,
+            tags: prev.tags.filter(tag => tag !== tagToRemove)
+        }));
+    };
+
+    // Estimate reading time
+    const estimateReadingTime = (content: string) => {
+        const wordsPerMinute = 200;
+        const words = content.trim().split(/\s+/).length;
+        return Math.ceil(words / wordsPerMinute);
+    };
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -48,18 +100,28 @@ export default function NewBlogPage() {
             toast.error('Title and content are required');
             return;
         }
-        
-        const editorContent = editorRef.current?.getContent() || form.content;
-        
+
+        const editorContent = await editorRef.current?.getContent() || form.content;
+        const readingTime = estimateReadingTime(editorContent);
+
         setSubmitting(true);
         try {
+            const payload = {
+                ...form,
+                content: editorContent,
+                cover_image: coverImage || null,
+                reading_time: readingTime,
+                published_at: form.is_published && !form.published_at ? new Date().toISOString() : form.published_at || null,
+                tags: JSON.stringify(form.tags)
+            };
+
             const res = await fetch('/api/blogs', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ ...form, content: editorContent, cover_image: coverImage || null }),
+                body: JSON.stringify(payload),
             });
             if (res.ok) {
                 toast.success('Blog post created!');
@@ -73,7 +135,7 @@ export default function NewBlogPage() {
     };
 
     return (
-        <div className="mx-auto max-w-5xl space-y-6">
+        <div className="mx-auto max-w-5xl space-y-8 pb-20">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -88,7 +150,7 @@ export default function NewBlogPage() {
                     </Button>
                     <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
                         <FileText className="h-6 w-6 text-primary" />
-                        New Blog Post
+                        Create New Blog Post
                     </h1>
                 </div>
                 <div className="flex items-center gap-3">
@@ -102,86 +164,230 @@ export default function NewBlogPage() {
                             {form.is_published ? 'Published' : 'Draft'}
                         </Label>
                     </div>
+                    <div className="flex items-center gap-2">
+                        <Switch
+                            id="featured"
+                            checked={form.is_featured}
+                            onCheckedChange={(checked) => setForm({ ...form, is_featured: checked })}
+                        />
+                        <Label htmlFor="featured" className="cursor-pointer text-sm flex items-center gap-1">
+                            <Star className="h-3 w-3" />
+                            Featured
+                        </Label>
+                    </div>
                     <Button variant="outline" onClick={() => router.push('/admin/blogs')}>
                         Cancel
                     </Button>
                     <Button onClick={handleSubmit} className="gap-2 glow" disabled={submitting}>
-                        {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
+                        {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                         Publish Post
                     </Button>
                 </div>
             </div>
 
-            {/* Meta fields */}
-            <div className="grid gap-4 rounded-xl border border-border/50 bg-card/50 p-5">
-                <div className="grid gap-2">
-                    <Label htmlFor="title">Title *</Label>
-                    <Input
-                        id="title"
-                        placeholder="Enter post title…"
-                        value={form.title}
-                        onChange={(e) => setForm({ ...form, title: e.target.value })}
-                        className="text-lg font-medium"
-                    />
-                </div>
-                <div className="grid gap-2">
-                    <Label htmlFor="excerpt">Excerpt</Label>
-                    <Textarea
-                        id="excerpt"
-                        placeholder="A short summary of the post…"
-                        rows={2}
-                        value={form.excerpt}
-                        onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-                    />
-                </div>
-
-                {/* Cover Image */}
-                <div className="grid gap-2">
-                    <Label>Cover Image</Label>
-                    <input
-                        ref={fileRef}
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleImageUpload}
-                    />
-                    {coverImage ? (
-                        <div className="relative overflow-hidden rounded-xl border border-border/50">
-                            <img src={coverImage} alt="Cover" className="w-full max-h-60 object-cover" />
-                            <Button
-                                type="button"
-                                size="sm"
-                                variant="secondary"
-                                className="absolute bottom-3 right-3 gap-2"
-                                onClick={() => fileRef.current?.click()}
-                            >
-                                <Upload className="h-3.5 w-3.5" /> Change
-                            </Button>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Left Column — Main Content */}
+                <div className="md:col-span-2 space-y-8">
+                    {/* Basic Info */}
+                    <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-6">
+                        <h2 className="font-semibold text-lg flex items-center gap-2">
+                            <FileText className="h-5 w-5 text-primary" />
+                            Basic Information
+                        </h2>
+                        <div className="grid gap-4">
+                            <div className="grid gap-2">
+                                <Label>Post Title *</Label>
+                                <Input
+                                    value={form.title}
+                                    onChange={(e) => handleTitleChange(e.target.value)}
+                                    placeholder="Enter an engaging blog post title..."
+                                    className="text-lg font-medium"
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label>URL Slug</Label>
+                                <Input
+                                    value={form.slug}
+                                    onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                                    placeholder="url-friendly-slug"
+                                    className="font-mono text-sm"
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label>Excerpt</Label>
+                                <Textarea
+                                    value={form.excerpt}
+                                    onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
+                                    placeholder="A compelling summary that appears in previews..."
+                                    rows={3}
+                                />
+                            </div>
                         </div>
-                    ) : (
-                        <button
-                            type="button"
-                            onClick={() => fileRef.current?.click()}
-                            className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-muted/20 py-10 text-muted-foreground transition-colors hover:border-primary/30 hover:bg-muted/30"
-                        >
-                            {uploading
-                                ? <Loader2 className="mb-2 h-8 w-8 animate-spin text-primary" />
-                                : <ImageIcon className="mb-2 h-8 w-8" />
-                            }
-                            <span className="text-sm font-medium">{uploading ? 'Uploading…' : 'Click to upload cover image'}</span>
-                            <span className="mt-1 text-xs">PNG, JPG, WebP up to 5MB</span>
-                        </button>
-                    )}
-                </div>
-            </div>
+                    </div>
 
-            {/* ── Lexical Editor lives OUTSIDE the form to prevent submit-on-drag ── */}
-            <div className="grid gap-2">
-                <Label className="text-sm font-medium">Content *</Label>
-                <LexicalEditor
-                    ref={editorRef}
-                    placeholder="Start writing your blog post..."
-                />
+                    {/* SEO Metadata */}
+                    <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
+                        <h2 className="font-semibold text-lg">SEO & Meta</h2>
+                        <div className="space-y-4">
+                            <div className="grid gap-2">
+                                <Label>Meta Title</Label>
+                                <Input
+                                    value={form.meta_title}
+                                    onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
+                                    placeholder="Custom title for search engines..."
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label>Meta Description</Label>
+                                <Textarea
+                                    value={form.meta_description}
+                                    onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
+                                    placeholder="Description for search engine snippets..."
+                                    rows={3}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label>Meta Keywords</Label>
+                                <Input
+                                    value={form.meta_keywords}
+                                    onChange={(e) => setForm({ ...form, meta_keywords: e.target.value })}
+                                    placeholder="keyword1, keyword2, keyword3"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Cover Image */}
+                    <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
+                        <h2 className="font-semibold text-lg">Cover Image</h2>
+                        <input
+                            ref={fileRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleImageUpload}
+                        />
+                        {coverImage ? (
+                            <div className="relative overflow-hidden rounded-xl border border-border/50">
+                                <img src={coverImage} alt="Cover" className="w-full max-h-48 object-cover" />
+                                <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="secondary"
+                                    className="absolute bottom-3 right-3 gap-2"
+                                    onClick={() => fileRef.current?.click()}
+                                >
+                                    <Upload className="h-3.5 w-3.5" /> Change
+                                </Button>
+                            </div>
+                        ) : (
+                            <button
+                                type="button"
+                                onClick={() => fileRef.current?.click()}
+                                className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-border/50 bg-muted/20 py-8 text-muted-foreground transition-colors hover:border-primary/30 hover:bg-muted/30"
+                            >
+                                {uploading
+                                    ? <Loader2 className="mb-2 h-8 w-8 animate-spin text-primary" />
+                                    : <ImageIcon className="mb-2 h-8 w-8" />
+                                }
+                                <span className="text-sm font-medium">{uploading ? 'Uploading…' : 'Click to upload cover image'}</span>
+                                <span className="mt-1 text-xs">PNG, JPG, WebP up to 5MB</span>
+                            </button>
+                        )}
+                    </div>
+
+                    {/* Rich Content Editor */}
+                    <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
+                        <h2 className="font-semibold text-lg">Content</h2>
+                        <div className="rounded-lg border border-border/50 bg-background/50 overflow-hidden text-foreground">
+                            <BlockNoteEditor
+                                ref={editorRef}
+                                placeholder="Start writing your blog post content..."
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Column — Settings & Meta */}
+                <div className="space-y-8">
+
+                    {/* Author & Tags */}
+                    <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
+                        <h2 className="font-semibold text-lg flex items-center gap-2">
+                            <User className="h-5 w-5 text-primary" />
+                            Author & Tags
+                        </h2>
+                        <div className="grid gap-4">
+                            <div className="grid gap-2">
+                                <Label>Author</Label>
+                                <Input
+                                    value={form.author}
+                                    onChange={(e) => setForm({ ...form, author: e.target.value })}
+                                    placeholder="Post author name"
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label>Tags</Label>
+                                <div className="flex gap-2">
+                                    <Input
+                                        value={tagInput}
+                                        onChange={(e) => setTagInput(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                                        placeholder="Add a tag..."
+                                        className="flex-1"
+                                    />
+                                    <Button type="button" onClick={addTag} size="sm">
+                                        <Tag className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                                {form.tags.length > 0 && (
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {form.tags.map((tag, index) => (
+                                            <span
+                                                key={index}
+                                                className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium"
+                                            >
+                                                {tag}
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeTag(tag)}
+                                                    className="ml-1 hover:text-destructive"
+                                                >
+                                                    ×
+                                                </button>
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Publishing Options */}
+                    <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
+                        <h2 className="font-semibold text-lg flex items-center gap-2">
+                            <Calendar className="h-5 w-5 text-primary" />
+                            Publishing
+                        </h2>
+                        <div className="grid gap-4">
+                            <div className="grid gap-2">
+                                <Label>Publish Date</Label>
+                                <Input
+                                    type="datetime-local"
+                                    value={form.published_at}
+                                    onChange={(e) => setForm({ ...form, published_at: e.target.value })}
+                                    placeholder="Leave empty for immediate publish"
+                                />
+                            </div>
+                            <div className="flex items-center gap-3 pt-2">
+                                <Clock className="h-4 w-4 text-muted-foreground" />
+                                <span className="text-sm text-muted-foreground">
+                                    Estimated reading time: {estimateReadingTime(form.content || '')} min
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );

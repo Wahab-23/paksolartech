@@ -216,6 +216,16 @@ export default function EditProductPage() {
                         </div>
                     </div>
 
+                    {/* Media Management */}
+                    <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
+                        <h2 className="font-semibold text-lg">Product Media</h2>
+                        <MultiImageUpload
+                            images={images}
+                            onChange={(newImages) => setImages(newImages)}
+                            uploadPath="products"
+                        />
+                    </div>
+
                     {/* Rich Description (BlockNote) */}
                     <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
                         <h2 className="font-semibold text-lg">Product Story & Full Description</h2>
@@ -270,15 +280,6 @@ export default function EditProductPage() {
 
                 {/* Right Column — Secondary Details */}
                 <div className="space-y-8">
-                    {/* Media Management */}
-                    <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
-                        <h2 className="font-semibold text-lg">Product Media</h2>
-                        <MultiImageUpload
-                            images={images}
-                            onChange={(newImages) => setImages(newImages)}
-                        />
-                    </div>
-
                     {/* Pricing & Logistics */}
                     <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-4">
                         <h2 className="font-semibold text-lg text-primary">Price & Detail</h2>

@@ -90,7 +90,7 @@ const BlockNoteEditor = forwardRef<BlockNoteEditorRef, BlockNoteEditorProps>(
         <BlockNoteView
           editor={editor}
           theme="light"
-          className="blocknote-light min-h-[150px] md:min-h-[300px] bg-white h-auto"
+          className="blocknote-light bg-white h-auto"
         />
       </div>
     );

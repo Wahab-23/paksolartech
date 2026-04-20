@@ -2,15 +2,15 @@
 
 import { useState, useRef } from "react";
 import { Upload, X, Loader2, Image as ImageIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 interface MultiImageUploadProps {
     images: string[];
     onChange: (images: string[]) => void;
+    uploadPath?: string; // Optional path for uploads (e.g., 'products', 'blogs', etc.)
 }
 
-export default function MultiImageUpload({ images, onChange }: MultiImageUploadProps) {
+export default function MultiImageUpload({ images, onChange, uploadPath = 'general' }: MultiImageUploadProps) {
     const [uploading, setUploading] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -24,6 +24,7 @@ export default function MultiImageUpload({ images, onChange }: MultiImageUploadP
         for (let i = 0; i < files.length; i++) {
             const formData = new FormData();
             formData.append('file', files[i]);
+            formData.append('path', uploadPath);
 
             try {
                 const res = await fetch('/api/upload', {
