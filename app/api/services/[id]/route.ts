@@ -22,6 +22,7 @@ export async function GET(req: NextRequest, { params }: Props) {
             features: typeof row.features === 'string' ? JSON.parse(row.features) : (row.features || []),
             benefits: typeof row.benefits === 'string' ? JSON.parse(row.benefits) : (row.benefits || []),
             process: typeof row.process === 'string' ? JSON.parse(row.process) : (row.process || []),
+            faqs: typeof row.faqs === 'string' ? JSON.parse(row.faqs) : (row.faqs || []),
         });
     } catch (error) {
         return NextResponse.json({ error: 'Failed to fetch service' }, { status: 500 });
@@ -46,6 +47,7 @@ export async function PUT(req: NextRequest, { params }: Props) {
                 features = ?, 
                 benefits = ?, 
                 process = ?, 
+                faqs = ?,
                 is_active = ? 
             WHERE id = ?`,
             [
@@ -55,9 +57,10 @@ export async function PUT(req: NextRequest, { params }: Props) {
                 long_desc, 
                 icon, 
                 image_url, 
-                JSON.stringify(features), 
-                JSON.stringify(benefits), 
-                JSON.stringify(process), 
+                JSON.stringify(features || []), 
+                JSON.stringify(benefits || []), 
+                JSON.stringify(process || []), 
+                JSON.stringify(body.faqs || []),
                 is_active, 
                 id
             ]

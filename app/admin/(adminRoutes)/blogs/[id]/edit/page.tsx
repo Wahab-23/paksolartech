@@ -9,7 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
-import { ArrowLeft, Loader2, Upload, Image as ImageIcon, Pencil, Save, FileText, User, Tag, Calendar, Clock, Star } from 'lucide-react';
+import { ArrowLeft, Loader2, Upload, Image as ImageIcon, Pencil, Save, FileText, User, Tag, Calendar, Clock, Star, Plus, Trash2, HelpCircle, MessageSquare } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import BlockNoteEditor, { type BlockNoteEditorRef } from '@/components/blocknote/blocknoteEditor';
 
 interface Props {
@@ -34,6 +35,7 @@ export default function EditBlogPage({ params }: Props) {
         reading_time: 0,
         published_at: '',
         tags: [] as string[],
+        faqs: [] as { question: string; answer: string }[],
     });
     const [tagInput, setTagInput] = useState('');
     const [coverImage, setCoverImage] = useState('');
@@ -75,6 +77,14 @@ export default function EditBlogPage({ params }: Props) {
         return Math.ceil(words / wordsPerMinute);
     };
 
+    const addFaq = () => setForm({ ...form, faqs: [...form.faqs, { question: '', answer: '' }] });
+    const removeFaq = (idx: number) => setForm({ ...form, faqs: form.faqs.filter((_, i) => i !== idx) });
+    const updateFaq = (idx: number, field: string, val: string) => {
+        const newFaqs = [...form.faqs] as any;
+        newFaqs[idx][field] = val;
+        setForm({ ...form, faqs: newFaqs });
+    };
+
     useEffect(() => {
         fetch(`/api/blogs/${id}`, { headers })
             .then((r) => r.json())
@@ -93,6 +103,7 @@ export default function EditBlogPage({ params }: Props) {
                     reading_time: blog.reading_time || 0,
                     published_at: blog.published_at ? new Date(blog.published_at).toISOString().slice(0, 16) : '',
                     tags: blog.tags ? (typeof blog.tags === 'string' ? JSON.parse(blog.tags) : blog.tags) : [],
+                    faqs: blog.faqs ? (typeof blog.faqs === 'string' ? JSON.parse(blog.faqs) : blog.faqs) : [],
                 });
                 setCoverImage(blog.cover_image || '');
                 setLoading(false);
@@ -119,12 +130,13 @@ export default function EditBlogPage({ params }: Props) {
     };
 
     const handleSubmit = async () => {
-        if (!form.title || !form.content) {
+        const editorContent = await editorRef.current?.getContent() || form.content;
+        
+        if (!form.title || !editorContent) {
             toast.error('Title and content are required');
             return;
         }
         
-        const editorContent = await editorRef.current?.getContent() || form.content;
         const readingTime = estimateReadingTime(editorContent);
         
         setSubmitting(true);
@@ -331,6 +343,83 @@ export default function EditBlogPage({ params }: Props) {
                                 initialContent={form.content}
                                 placeholder="Start writing your blog post content..."
                             />
+                        </div>
+                    </div>
+
+                    {/* FAQs */}
+                    <div className="rounded-xl border border-border/50 bg-card/50 p-6 space-y-6">
+                        <div className="flex items-center justify-between">
+                            <h2 className="font-semibold text-lg flex items-center gap-2">
+                                <HelpCircle className="h-5 w-5 text-primary" />
+                                FAQ&apos;s
+                            </h2>
+                            <Button type="button" variant="outline" size="sm" onClick={addFaq} className="gap-1">
+                                <Plus className="h-4 w-4" /> Add FAQ
+                            </Button>
+                        </div>
+                        <div className="space-y-4">
+                            {form.faqs.map((faq, i) => (
+                                <div key={i} className="relative rounded-xl border border-border p-5 space-y-4 bg-muted/20 group transition-all hover:bg-muted/30">
+                                    <Button 
+                                        type="button" 
+                                        variant="ghost" 
+                                        size="icon" 
+                                        onClick={() => removeFaq(i)} 
+                                        className="absolute top-2 right-2 text-destructive h-8 w-8 hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                    <div className="grid gap-4">
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Question</Label>
+                                            <Input 
+                                                value={faq.question} 
+                                                onChange={(e) => updateFaq(i, 'question', e.target.value)} 
+                                                placeholder="e.g. What is the benefit of solar energy?" 
+                                                className="h-10 bg-background"
+                                            />
+                                        </div>
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Answer</Label>
+                                            <Textarea 
+                                                value={faq.answer} 
+                                                onChange={(e) => updateFaq(i, 'answer', e.target.value)} 
+                                                placeholder="Detailed answer..." 
+                                                rows={3} 
+                                                className="bg-background"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {form.faqs.length > 0 && (
+                                <div className="mt-8 pt-6 border-t border-border">
+                                    <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+                                        <MessageSquare className="h-4 w-4" />
+                                        Preview
+                                    </h3>
+                                    <Accordion type="single" collapsible className="w-full">
+                                        {form.faqs.map((faq, i) => (
+                                            <AccordionItem key={i} value={`faq-${i}`}>
+                                                <AccordionTrigger className="text-sm font-medium text-left">
+                                                    {faq.question || `Question ${i + 1}`}
+                                                </AccordionTrigger>
+                                                <AccordionContent className="text-sm text-muted-foreground">
+                                                    {faq.answer || "No answer provided yet."}
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                        ))}
+                                    </Accordion>
+                                </div>
+                            )}
+
+                            {form.faqs.length === 0 && (
+                                <div className="flex flex-col items-center justify-center py-12 px-4 rounded-xl border-2 border-dashed border-border/50">
+                                    <HelpCircle className="h-10 w-10 text-muted-foreground/30 mb-2" />
+                                    <p className="text-sm text-muted-foreground font-medium text-center">No FAQs added for this blog post.</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

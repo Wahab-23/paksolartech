@@ -11,8 +11,9 @@ import { toast } from 'sonner';
 import { 
     ArrowLeft, Loader2, Plus, Sun, Zap, Battery, Wrench, 
     BarChart3, Shield, Trash2, Upload, Globe2, Heart, 
-    Clock, Settings, Headphones
+    Clock, Settings, Headphones, HelpCircle, MessageSquare
 } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const iconOptions = [
     { name: 'Sun', icon: Sun },
@@ -45,7 +46,8 @@ export default function NewServicePage() {
         is_active: true,
         features: [] as string[],
         benefits: [] as { title: string; desc: string; icon: string }[],
-        process: [] as { step: string; title: string; desc: string }[]
+        process: [] as { step: string; title: string; desc: string }[],
+        faqs: [] as { question: string; answer: string }[]
     });
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,6 +117,14 @@ export default function NewServicePage() {
         const newProcess = [...form.process] as any;
         newProcess[idx][field] = val;
         setForm({ ...form, process: newProcess });
+    };
+
+    const addFaq = () => setForm({ ...form, faqs: [...form.faqs, { question: '', answer: '' }] });
+    const removeFaq = (idx: number) => setForm({ ...form, faqs: form.faqs.filter((_, i) => i !== idx) });
+    const updateFaq = (idx: number, field: string, val: string) => {
+        const newFaqs = [...form.faqs] as any;
+        newFaqs[idx][field] = val;
+        setForm({ ...form, faqs: newFaqs });
     };
 
     return (
@@ -229,7 +239,10 @@ export default function NewServicePage() {
                     {/* Process */}
                     <div className="rounded-xl border border-border/50 bg-card p-6 space-y-4">
                         <div className="flex items-center justify-between">
-                            <h2 className="text-lg font-semibold">Implementation Process</h2>
+                            <h2 className="text-lg font-semibold flex items-center gap-2">
+                                <Clock className="h-5 w-5 text-primary" />
+                                Implementation Process
+                            </h2>
                             <Button type="button" variant="outline" size="sm" onClick={addProcess} className="gap-1">
                                 <Plus className="h-4 w-4" /> Add Step
                             </Button>
@@ -258,6 +271,79 @@ export default function NewServicePage() {
                             ))}
                             {form.process.length === 0 && (
                                 <p className="text-xs text-muted-foreground text-center py-4 italic">No process steps added yet.</p>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* FAQs */}
+                    <div className="rounded-xl border border-border/50 bg-card p-6 space-y-6">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-lg font-semibold flex items-center gap-2">
+                                <HelpCircle className="h-5 w-5 text-primary" />
+                                FAQ&apos;s
+                            </h2>
+                            <Button type="button" variant="outline" size="sm" onClick={addFaq} className="gap-1">
+                                <Plus className="h-4 w-4" /> Add FAQ
+                            </Button>
+                        </div>
+                        <div className="space-y-4">
+                            {form.faqs.map((faq, i) => (
+                                <div key={i} className="relative rounded-xl border border-border p-5 space-y-4 bg-muted/20 group transition-all hover:bg-muted/30">
+                                    <Button 
+                                        type="button" 
+                                        variant="ghost" 
+                                        size="icon" 
+                                        onClick={() => removeFaq(i)} 
+                                        className="absolute top-2 right-2 text-destructive h-8 w-8 hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                    <div className="grid gap-4">
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Question</Label>
+                                            <Input 
+                                                value={faq.question} 
+                                                onChange={(e) => updateFaq(i, 'question', e.target.value)} 
+                                                placeholder="e.g. How long does installation take?" 
+                                                className="h-10"
+                                            />
+                                        </div>
+                                        <div className="grid gap-2">
+                                            <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Answer</Label>
+                                            <Textarea 
+                                                value={faq.answer} 
+                                                onChange={(e) => updateFaq(i, 'answer', e.target.value)} 
+                                                placeholder="Detailed answer..." 
+                                                rows={3} 
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+
+                            {form.faqs.length > 0 && (
+                                <div className="mt-8 pt-6 border-t border-border/50">
+                                    <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+                                        <MessageSquare className="h-4 w-4" />
+                                        Preview
+                                    </h3>
+                                    <Accordion type="single" collapsible className="w-full">
+                                        {form.faqs.map((faq, i) => (
+                                            <AccordionItem key={i} value={`faq-${i}`}>
+                                                <AccordionTrigger className="text-sm font-medium text-left">
+                                                    {faq.question || `Question ${i + 1}`}
+                                                </AccordionTrigger>
+                                                <AccordionContent className="text-sm text-muted-foreground">
+                                                    {faq.answer || "No answer provided yet."}
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                        ))}
+                                    </Accordion>
+                                </div>
+                            )}
+
+                            {form.faqs.length === 0 && (
+                                <p className="text-xs text-muted-foreground text-center py-4 italic">No FAQs added for this service.</p>
                             )}
                         </div>
                     </div>

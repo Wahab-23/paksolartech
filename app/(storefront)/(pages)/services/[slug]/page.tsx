@@ -3,8 +3,9 @@ import { Metadata } from 'next';
 import { getServiceBySlug, getAllServices } from '@/app/models/service.model';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ArrowRight, Sun, Zap, Battery, Wrench, BarChart3, Shield, Globe2, Clock, Settings, Heart, DollarSign, Info, Headphones } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Sun, Zap, Battery, Wrench, BarChart3, Shield, Globe2, Clock, Settings, Heart, DollarSign, Info, Headphones, MessageSquare, HelpCircle, ArrowDown } from 'lucide-react';
 import Link from 'next/link';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 // Icon mapping helper
 const iconMap: Record<string, any> = {
@@ -155,6 +156,35 @@ export default async function ServicePage({ params }: Props) {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        </section>
+      )}
+      {/* ── FAQ SECTION ── */}
+      {service.faqs && service.faqs.length > 0 && (
+        <section className="section-padding">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
+            <div className="mb-12 text-center">
+              <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
+                <HelpCircle className="h-3.5 w-3.5" />
+                Common Questions
+              </Badge>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Frequently Asked <span className="text-gradient">Questions</span></h2>
+              <p className="mt-4 text-muted-foreground">Everything you need to know about our {service.title.toLowerCase()}.</p>
+            </div>
+            <div className="rounded-2xl border border-border/50 bg-card/30 p-6 md:p-8 backdrop-blur-sm">
+              <Accordion type="single" collapsible className="w-full">
+                {service.faqs.map((faq, i) => (
+                  <AccordionItem key={i} value={`faq-${i}`} className="border-border/50 first:border-t-0">
+                    <AccordionTrigger className="text-left text-lg font-bold hover:text-primary transition-colors py-5">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-base leading-relaxed text-muted-foreground pb-6">
+                      {faq.answer}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
           </div>
         </section>

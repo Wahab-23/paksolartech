@@ -7,8 +7,8 @@ export async function createBlog(data) {
         .replace(/(^-|-$)/g, '');
 
     const [result] = await db.query(
-        'INSERT INTO blogs (title, slug, excerpt, content, cover_image, is_published) VALUES (?, ?, ?, ?, ?, ?)',
-        [data.title, slug, data.excerpt || null, data.content, data.cover_image || null, data.is_published ?? true]
+        'INSERT INTO blogs (title, slug, excerpt, content, cover_image, is_published, faqs) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [data.title, slug, data.excerpt || null, data.content, data.cover_image || null, data.is_published ?? true, data.faqs ? JSON.stringify(data.faqs) : null]
     );
     return result.insertId;
 }
@@ -20,15 +20,22 @@ export async function getAllBlogs({ publishedOnly = false } = {}) {
     const [rows] = await db.query(query);
     return rows;
 }
-
 export async function getBlogBySlug(slug) {
     const [rows] = await db.query('SELECT * FROM blogs WHERE slug = ?', [slug]);
-    return rows[0];
+    if (!rows[0]) return null;
+    const blog = rows[0];
+    if (typeof blog.tags === 'string') blog.tags = JSON.parse(blog.tags);
+    if (typeof blog.faqs === 'string') blog.faqs = JSON.parse(blog.faqs);
+    return blog;
 }
 
 export async function getBlogById(id) {
     const [rows] = await db.query('SELECT * FROM blogs WHERE id = ?', [id]);
-    return rows[0];
+    if (!rows[0]) return null;
+    const blog = rows[0];
+    if (typeof blog.tags === 'string') blog.tags = JSON.parse(blog.tags);
+    if (typeof blog.faqs === 'string') blog.faqs = JSON.parse(blog.faqs);
+    return blog;
 }
 
 export async function updateBlog(id, data) {
@@ -41,6 +48,7 @@ export async function updateBlog(id, data) {
     if (data.content !== undefined) { updates.push('content = ?'); values.push(data.content); }
     if (data.cover_image !== undefined) { updates.push('cover_image = ?'); values.push(data.cover_image); }
     if (data.is_published !== undefined) { updates.push('is_published = ?'); values.push(data.is_published); }
+    if (data.faqs !== undefined) { updates.push('faqs = ?'); values.push(data.faqs ? JSON.stringify(data.faqs) : null); }
 
     if (updates.length === 0) return;
 

@@ -2,9 +2,10 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, ArrowLeft, Newspaper } from 'lucide-react';
+import { Calendar, ArrowLeft, Newspaper, HelpCircle } from 'lucide-react';
 import { getBlogBySlug } from '@/app/models/blog.model';
 import BlockNoteRenderer from '@/components/blocknote/BlockNoteRenderer';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface Props {
     params: Promise<{ slug: string }>;
@@ -73,6 +74,34 @@ export default async function BlogDetailPage({ params }: Props) {
 
                         {/* Content */}
                         <BlockNoteRenderer data={blog.content} />
+
+                        {/* FAQs Section */}
+                        {blog.faqs && blog.faqs.length > 0 && (
+                            <div className="mt-16 pt-16 border-t border-border">
+                                <div className="mb-10 text-center">
+                                    <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
+                                        <HelpCircle className="h-3.5 w-3.5" />
+                                        FAQ&apos;s
+                                    </Badge>
+                                    <h2 className="text-3xl font-bold tracking-tight">Frequently Asked <span className="text-gradient">Questions</span></h2>
+                                    <p className="mt-3 text-muted-foreground">More insights about this topic.</p>
+                                </div>
+                                <div className="rounded-2xl border border-border/50 bg-card/30 p-6 md:p-8 backdrop-blur-sm">
+                                    <Accordion type="single" collapsible className="w-full">
+                                        {blog.faqs.map((faq: { question: string; answer: string }, i: number) => (
+                                            <AccordionItem key={i} value={`faq-${i}`} className="border-border/50 first:border-t-0">
+                                                <AccordionTrigger className="text-left text-lg font-bold hover:text-primary transition-colors py-5">
+                                                    {faq.question}
+                                                </AccordionTrigger>
+                                                <AccordionContent className="text-base leading-relaxed text-muted-foreground pb-6">
+                                                    {faq.answer}
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                        ))}
+                                    </Accordion>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </article>
             </main>

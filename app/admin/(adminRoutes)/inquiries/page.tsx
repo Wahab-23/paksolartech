@@ -163,6 +163,9 @@ export default function InquiriesPage() {
                 <DialogContent className="sm:max-w-md">
                     <DialogHeader>
                         <DialogTitle>Inquiry from {viewInquiry?.name}</DialogTitle>
+                        <DialogDescription>
+                            Inquiry details and contact information
+                        </DialogDescription>
                     </DialogHeader>
                     {viewInquiry && (
                         <div className="space-y-4 py-2">

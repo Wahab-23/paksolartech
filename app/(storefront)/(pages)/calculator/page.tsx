@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Sun, Zap } from "lucide-react";
+import { ArrowLeft, Sun, Zap, TrendingUp } from "lucide-react";
 import { getCalculatorSettings } from "@/app/models/calculator-settings.model";
 import SolarCalculatorClient from "@/components/calculator/SolarCalculatorClient";
 import type { InputMode, SystemType } from "@/lib/calculatorEngine";
@@ -38,46 +38,23 @@ export default async function CalculatorPage({ searchParams }: PageProps) {
     const autoCalculate = sp("autoCalc") === "1";
 
     return (
-        <main className="min-h-screen bg-background">
+        <main className="min-h-screen bg-background relative overflow-hidden">
+            {/* Decorative background gradient */}
+            <div className="absolute inset-0 -z-10">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+                <div className="absolute bottom-20 left-0 w-72 h-72 bg-primary/3 rounded-full blur-3xl" />
+            </div>
+
             {/* ── Page Header ──────────────────────────────────── */}
-            <div className="relative mx-auto max-w-5xl px-4 pt-32">
-                <div className="mx-auto max-w-5xl px-4 py-6 ">
-                    <Link
-                        href="/"
-                        className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                        <ArrowLeft className="h-3.5 w-3.5" />
-                        Back to Home
-                    </Link>
-
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10">
-                            <Sun className="h-5 w-5 text-primary" />
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-bold tracking-tight">
-                                Solar Savings Calculator
-                            </h1>
-                            <p className="text-sm text-muted-foreground">
-                                Estimate system size, cost &amp; payback — based on live NEPRA tariff data
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Quick stats row */}
-                    <div className="mt-5 flex flex-wrap gap-4 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1.5">
-                            <Zap className="h-3.5 w-3.5 text-primary" />
-                            {settings.peak_sun_hours} peak sun hrs/day (Karachi avg)
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                            <Zap className="h-3.5 w-3.5 text-primary" />
-                            Net metering export @ Rs. {settings.export_rate}/kWh
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                            <Zap className="h-3.5 w-3.5 text-primary" />
-                            On-grid @ Rs. {(settings.ongrid_cost_per_kw / 1000).toFixed(0)}k/kW &bull; Hybrid @ Rs. {(settings.hybrid_cost_per_kw / 1000).toFixed(0)}k/kW
-                        </span>
+            <div className="relative mx-auto max-w-5xl px-4 pt-22 md:pt-32 pb-8">
+                <div className="px-2 md:px-8 mt-6">
+                    <div className="flex-1">
+                        <h1 className="text-4xl font-bold tracking-tight mb-2">
+                            Solar Savings Calculator
+                        </h1>
+                        <p className="text-base text-muted-foreground">
+                            Estimate your ideal system size, installation cost, monthly savings, and payback period — based on live NEPRA tariff slabs and Karachi solar data.
+                        </p>
                     </div>
                 </div>
             </div>

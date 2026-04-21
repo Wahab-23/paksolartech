@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { Plus, X, Pencil, ChevronDown } from 'lucide-react';
+import { Plus, X, Pencil, ChevronDown, Trash2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -46,6 +46,10 @@ export default function AdminUsersPage() {
     const [editUser, setEditUser] = useState<User | null>(null);
     const [editRole, setEditRole] = useState('');
     const [editSaving, setEditSaving] = useState(false);
+
+    // Delete state
+    const [deleteTarget, setDeleteTarget] = useState<User | null>(null);
+    const [deleting, setDeleting] = useState(false);
 
     const fetchUsers = () => {
         setLoading(true);
@@ -105,6 +109,23 @@ export default function AdminUsersPage() {
             body: JSON.stringify({ is_active: !isActive }),
         });
         setUsers(prev => prev.map(u => u.id === id ? { ...u, is_active: !isActive } : u));
+    };
+
+    const handleDelete = async () => {
+        if (!deleteTarget) return;
+        setDeleting(true);
+        try {
+            const res = await fetch(`/api/users/${deleteTarget.id}`, {
+                method: 'DELETE',
+            });
+            if (!res.ok) throw new Error('Failed to delete user');
+            setUsers(prev => prev.filter(u => u.id !== deleteTarget.id));
+            setDeleteTarget(null);
+        } catch (error) {
+            console.error('Delete error:', error);
+        } finally {
+            setDeleting(false);
+        }
     };
 
     return (
@@ -216,6 +237,34 @@ export default function AdminUsersPage() {
                 </div>
             )}
 
+            {/* Delete Confirmation Modal */}
+            {deleteTarget && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                    <div className="w-full max-w-sm rounded-2xl border border-border/50 bg-card p-6 shadow-xl">
+                        <div className="mb-4 flex items-center gap-3">
+                            <div className="p-2 rounded-lg bg-destructive/10">
+                                <AlertCircle className="h-5 w-5 text-destructive" />
+                            </div>
+                            <h2 className="font-semibold text-destructive">Delete User</h2>
+                        </div>
+                        <div className="mb-6">
+                            <p className="text-sm text-muted-foreground mb-2">Are you sure you want to delete this user?</p>
+                            <div className="bg-muted/50 rounded-lg p-3">
+                                <p className="text-sm font-medium">{deleteTarget.name}</p>
+                                <p className="text-xs text-muted-foreground">{deleteTarget.email}</p>
+                            </div>
+                            <p className="text-xs text-destructive/70 mt-3">This action cannot be undone.</p>
+                        </div>
+                        <div className="flex gap-3">
+                            <Button onClick={handleDelete} disabled={deleting} variant="destructive" className="flex-1">
+                                {deleting ? 'Deleting...' : 'Delete User'}
+                            </Button>
+                            <Button variant="ghost" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Role Legend */}
             <div className="mb-4 flex flex-wrap gap-2">
                 {ALL_ROLES.map(role => (
@@ -276,6 +325,12 @@ export default function AdminUsersPage() {
                                                 className={`text-xs rounded-lg px-3 py-1.5 transition-colors ${user.is_active ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20' : 'bg-green-500/10 text-green-400 hover:bg-green-500/20'}`}
                                             >
                                                 {user.is_active ? 'Deactivate' : 'Activate'}
+                                            </button>
+                                            <button
+                                                onClick={() => setDeleteTarget(user)}
+                                                className="inline-flex items-center gap-1 text-xs rounded-lg px-3 py-1.5 bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
+                                            >
+                                                <Trash2 className="h-3 w-3" /> Delete
                                             </button>
                                         </div>
                                     </td>

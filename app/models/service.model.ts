@@ -12,6 +12,7 @@ export interface Service {
     features: string[];
     benefits: { title: string; desc: string; icon: string }[];
     process: { step: string; title: string; desc: string }[];
+    faqs: { question: string; answer: string }[];
     is_active: boolean;
     created_at: Date;
     updated_at: Date;
@@ -26,6 +27,7 @@ export async function getAllServices(): Promise<Service[]> {
         features: typeof row.features === 'string' ? JSON.parse(row.features) : (row.features || []),
         benefits: typeof row.benefits === 'string' ? JSON.parse(row.benefits) : (row.benefits || []),
         process: typeof row.process === 'string' ? JSON.parse(row.process) : (row.process || []),
+        faqs: typeof row.faqs === 'string' ? JSON.parse(row.faqs) : (row.faqs || []),
     })) as Service[];
 }
 
@@ -41,5 +43,6 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
         features: typeof row.features === 'string' ? JSON.parse(row.features) : (row.features || []),
         benefits: typeof row.benefits === 'string' ? JSON.parse(row.benefits) : (row.benefits || []),
         process: typeof row.process === 'string' ? JSON.parse(row.process) : (row.process || []),
+        faqs: typeof row.faqs === 'string' ? JSON.parse(row.faqs) : (row.faqs || []),
     } as Service;
 }
