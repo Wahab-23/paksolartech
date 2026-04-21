@@ -284,7 +284,7 @@ function AboutSection() {
         <div className="grid items-center gap-12 lg:grid-cols-2">
           {/* Left — Content */}
           <div>
-            <Badge variant="outline" className="mb-4 Hand-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
+            <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
               <Users className="h-3.5 w-3.5" />
               About PakSolarTech
             </Badge>

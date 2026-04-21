@@ -1,4 +1,5 @@
 import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
+import Link from "next/link";
 
 
 export default function AboutPage() {
@@ -16,7 +17,7 @@ export default function AboutPage() {
             Whether you're looking to install solar panels for your home or business, or need expert advice on the best solar solutions for your energy needs, PakSolarTech is here to help. Our team of skilled professionals is dedicated to delivering high-quality service and support every step of the way.
         </p>
         <p className="text-md">
-            Join us in our mission to create a sustainable future by embracing solar energy. Contact us today to learn more about our services and how we can help you make the switch to clean, renewable energy.
+            Join us in our mission to create a sustainable future by embracing solar energy. <Link href="/contact" className="text-primary font-medium hover:underline transition-colors">Contact us today</Link> to learn more about our services and how we can help you make the switch to clean, renewable energy.
         </p>
         </div>
         <div className="relative mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">

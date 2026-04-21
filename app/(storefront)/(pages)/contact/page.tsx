@@ -53,7 +53,7 @@ export default function ContactPage() {
           <span className="text-gradient">Future Together</span>
         </h1>
         <p className="mx-auto max-w-2xl text-xl leading-relaxed text-muted-foreground">
-          Have questions about solar? Our experts are ready to help you transition 
+          Have questions about solar? Our experts are ready to help you transition
           to clean, sustainable energy with a custom solution for your home or business.
         </p>
       </section>
@@ -64,8 +64,8 @@ export default function ContactPage() {
           <div className="lg:col-span-5 space-y-6">
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
               {contactInfo.map((info, i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className="group flex items-start gap-5 rounded-2xl border border-border/50 bg-card/50 p-6 transition-all hover:border-primary/30"
                 >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
@@ -84,17 +84,6 @@ export default function ContactPage() {
                   </div>
                 </div>
               ))}
-            </div>
-
-            {/* Simple Map Placeholder */}
-            <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-border/50 bg-muted">
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-8 text-center">
-                <MapPin className="mb-2 h-8 w-8 text-muted-foreground/50" />
-                <p className="text-sm font-medium text-muted-foreground">Interactive map coming soon</p>
-                <p className="mt-1 text-xs text-muted-foreground/70">Visit us at our Korangi Industrial Area office.</p>
-              </div>
-              {/* Optional overlay to make it look like a map */}
-              <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)', backgroundSize: '24px 24px' }} />
             </div>
           </div>
 
