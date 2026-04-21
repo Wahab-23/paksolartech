@@ -21,31 +21,37 @@ export const metadata: Metadata = {
 /* ──────────────── SERVICE DATA ──────────────── */
 const services = [
   {
+    slug: 'residential-solar',
     icon: Sun,
     title: 'Residential Solar',
     desc: 'Power your home with clean, affordable solar energy. Custom-designed rooftop systems tailored to your needs.',
   },
   {
+    slug: 'commercial-solar',
     icon: Zap,
     title: 'Commercial Solar',
     desc: 'Reduce operational costs with large-scale solar installations for businesses and industrial facilities.',
   },
   {
+    slug: 'battery-storage',
     icon: Battery,
     title: 'Battery Storage',
     desc: 'Store excess solar energy for use during peak hours or power outages with advanced battery solutions.',
   },
   {
+    slug: 'maintenance-repair',
     icon: Wrench,
     title: 'Maintenance & Repair',
     desc: 'Keep your solar system running at peak performance with our expert maintenance and repair services.',
   },
   {
+    slug: 'energy-consulting',
     icon: BarChart3,
     title: 'Energy Consulting',
     desc: 'Get expert advice on energy optimization, system sizing, and maximizing your solar investment ROI.',
   },
   {
+    slug: 'warranty-support',
     icon: Shield,
     title: 'Warranty & Support',
     desc: 'Industry-leading warranties and 24/7 customer support to ensure your peace of mind.',
@@ -78,7 +84,7 @@ export default async function Home() {
         />
         <HeroSection />
         <CalculatorSection />
-        {featuredProducts.length > 0 && <FeaturedProductsSection products={featuredProducts} />}
+        {/* {featuredProducts.length > 0 && <FeaturedProductsSection products={featuredProducts} />} */}
         <ServicesSection />
         <AboutSection />
         <ContactSection />
@@ -110,7 +116,7 @@ function HeroSection() {
         <div className="max-w-3xl">
           <Badge variant="outline" className="mb-6 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
             <Sparkles className="h-3.5 w-3.5" />
-            Pakistan&apos;s #1 Solar Energy Company
+            Pakistan&apos;s Most Trusted Solar Company
           </Badge>
 
           <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-7xl">
@@ -129,7 +135,7 @@ function HeroSection() {
           <div className="mt-12 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-primary" />
-              Free Site Survey
+              Site Survey
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-primary" />
@@ -169,11 +175,19 @@ function HeroSection() {
 function CalculatorSection() {
   return (
     <section className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
-      <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Calculate Your Savings</h2>
-      <p className="mt-4 text-muted-foreground">
-        Enter your average monthly electricity bill to estimate the ideal solar system size for your home.
-      </p>
-      <SolarCalculatorClient />
+      <div className="flex flex-wrap items-end justify-between gap-4 mb-2">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Calculate Your Savings</h2>
+          <p className="mt-3 text-muted-foreground">
+            Enter your details below — we&apos;ll calculate the perfect solar system for you.
+          </p>
+        </div>
+        <Link href="/calculator" className="text-sm text-primary hover:underline underline-offset-4 flex items-center gap-1 shrink-0">
+          Open full calculator
+          <ArrowRight className="h-3.5 w-3.5" />
+        </Link>
+      </div>
+      <SolarCalculatorClient redirectMode />
     </section>
   );
 }
@@ -238,19 +252,23 @@ function ServicesSection() {
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
           {services.map((s) => (
-            <div
-              key={s.title}
+            <Link 
+              key={s.slug} 
+              href={`/services/${s.slug}`}
               className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 p-6 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-lg hover:shadow-primary/5 animate-slide-up"
             >
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
                 <s.icon className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="mb-2 text-lg font-semibold">{s.title}</h3>
+              <h3 className="mb-2 text-lg font-semibold flex items-center justify-between">
+                {s.title}
+                <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
+              </h3>
               <p className="text-sm leading-relaxed text-muted-foreground">{s.desc}</p>
 
               {/* Hover glow accent */}
               <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-primary/5 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
-            </div>
+            </Link>
           ))}
         </div>
       </div>

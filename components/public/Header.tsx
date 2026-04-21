@@ -2,18 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Sun, Zap } from 'lucide-react';
+import { Menu, Sun, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet';
 import ThemeToggle from '@/components/ThemeToggle';
 
 const navLinks = [
     { href: '/', label: 'Home' },
-    { href: '/products', label: 'Products' },
-    { href: '#services', label: 'Services' },
+    { href: '/services', label: 'Services' },
     { href: '/about', label: 'About' },
-    { href: '/blog', label: 'Blog' },
-    { href: '#contact', label: 'Contact' },
+    { href: '/contact', label: 'Contact' },
 ];
 
 export default function Header() {
@@ -28,7 +26,7 @@ export default function Header() {
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled
+            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${scrolled
                 ? 'glass shadow-lg shadow-black/20'
                 : 'bg-transparent'
                 }`}
@@ -58,28 +56,27 @@ export default function Header() {
                         </Link>
                     ))}
                     <ThemeToggle />
-                    <Button
-                        size="sm"
-                        className="ml-2 gap-2 glow"
-                        onClick={() => {
-                            document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-                        }}
-                    >
-                        <Zap className="h-3.5 w-3.5" />
-                        Get A Quote
-                    </Button>
+                    <Link href="/contact">
+                        <Button
+                            size="sm"
+                            className="ml-2 gap-2 glow"
+                        >
+                            <Zap className="h-3.5 w-3.5" />
+                            Get A Quote
+                        </Button>
+                    </Link>
                 </nav>
 
                 {/* Mobile Hamburger */}
                 <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                     <SheetTrigger asChild className="md:hidden">
                         <Button variant="ghost" size="icon" className="text-muted-foreground">
-                            <Menu className="h-5 w-5" />
+                            <Menu className="h-6 w-6" />
                         </Button>
                     </SheetTrigger>
                     <SheetContent side="right" className="w-72 border-border bg-card">
                         <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-                        <div className="flex items-center gap-2.5 mb-8 mt-2">
+                        <div className="flex items-center gap-2.5 mb-8 mt-3 px-3">
                             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/10">
                                 <Sun className="h-4 w-4 text-primary" />
                             </div>
@@ -87,7 +84,7 @@ export default function Header() {
                                 <span className="text-gradient">Pak</span>SolarTech
                             </span>
                         </div>
-                        <nav className="flex flex-col gap-1">
+                        <nav className="flex flex-col gap-1 px-3">
                             {navLinks.map((link) => (
                                 <Link
                                     key={link.label}
@@ -102,16 +99,14 @@ export default function Header() {
                                 <span className="text-sm text-muted-foreground">Theme</span>
                                 <ThemeToggle />
                             </div>
-                            <Button
-                                className="mt-3 gap-2 glow"
-                                onClick={() => {
-                                    setMobileOpen(false);
-                                    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-                                }}
-                            >
-                                <Zap className="h-3.5 w-3.5" />
-                                Get A Quote
-                            </Button>
+                            <Link href="/contact" onClick={() => setMobileOpen(false)}>
+                                <Button
+                                    className="mt-4 w-full gap-2 glow"
+                                >
+                                    <Zap className="h-3.5 w-3.5" />
+                                    Get A Quote
+                                </Button>
+                            </Link>
                         </nav>
                     </SheetContent>
                 </Sheet>

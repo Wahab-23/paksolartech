@@ -10,4 +10,3 @@ const ContactSectionClient = dynamic(
 export default function DeferredContactSection() {
   return <ContactSectionClient />;
 }
-

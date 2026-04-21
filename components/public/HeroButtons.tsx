@@ -15,7 +15,7 @@ export default function HeroButtons() {
     return (
         <div className="flex flex-wrap gap-4 animate-slide-up" style={{ animationDelay: "400ms" }}>
             <Button size="lg" className="gap-2 glow text-base" onClick={scrollToContact}>
-                Get Free Quote
+                Get A Quote
                 <ArrowRight className="h-4 w-4" />
             </Button>
             <Button

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     url: "https://paksolartech.com",
     siteName: "PakSolarTech",
     type: "website",
-    images: ["/og-image.png"],
+    images: ["https://paksolartech.com/og-image.png"],
   },
 };
 

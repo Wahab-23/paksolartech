@@ -4,11 +4,10 @@ import { Separator } from '@/components/ui/separator';
 
 const quickLinks = [
     { href: '/', label: 'Home' },
+    { href: '/services', label: 'Services' },
     { href: '/products', label: 'Products' },
-    { href: '#services', label: 'Services' },
     { href: '/about', label: 'About Us' },
-    { href: '/blog', label: 'Blog' },
-    { href: '#contact', label: 'Contact' },
+    { href: '/contact', label: 'Contact' },
 ];
 
 export default function Footer() {
@@ -57,11 +56,11 @@ export default function Footer() {
                             Services
                         </h4>
                         <ul className="space-y-2.5 text-sm text-muted-foreground">
-                            <li>Residential Solar</li>
-                            <li>Commercial Solar</li>
-                            <li>Solar Maintenance</li>
-                            <li>Energy Consulting</li>
-                            <li>Battery Storage</li>
+                            <li><Link href="/services/residential-solar" className="hover:text-primary transition-colors">Residential Solar</Link></li>
+                            <li><Link href="/services/commercial-solar" className="hover:text-primary transition-colors">Commercial Solar</Link></li>
+                            <li><Link href="/services/battery-storage" className="hover:text-primary transition-colors">Battery Storage</Link></li>
+                            <li><Link href="/services/maintenance-repair" className="hover:text-primary transition-colors">Solar Maintenance</Link></li>
+                            <li><Link href="/services/energy-consulting" className="hover:text-primary transition-colors">Energy Consulting</Link></li>
                         </ul>
                     </div>
 

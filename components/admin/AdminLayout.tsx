@@ -5,7 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
     LayoutDashboard, MessageSquare, FileText, LogOut,
-    Sun, Menu, X, ChevronRight, Store, Package, Users,
+    Sun, Menu, X, ChevronRight, Store, Package, Users, Settings2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -20,6 +20,7 @@ const navItems = [
     { href: '/admin/users', label: 'Users', icon: Users },
     { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
     { href: '/admin/blogs', label: 'Blog Posts', icon: FileText },
+    { href: '/admin/calculator-settings', label: 'Calculator Settings', icon: Settings2 },
 ];
 
 interface AdminUser {
