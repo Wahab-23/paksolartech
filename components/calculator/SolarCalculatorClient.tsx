@@ -13,6 +13,8 @@ import {
     type CalcResult, type SystemType, type InputMode, type CalculatorSettings,
 } from "@/lib/calculatorEngine";
 import { DEFAULT_SETTINGS } from "@/lib/calculatorDefaults";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 // ─── Props ─────────────────────────────────────────────────────────────────────
 
@@ -82,6 +84,24 @@ export default function SolarCalculatorClient({
 
         const roof = parseFloat(roofVal) || 0;
         const calc = runCalculation(kwh, sysType, roof, resolvedSettings);
+
+        // Sync URL parameters for shareability and "record" persistence
+        if (typeof window !== "undefined") {
+            const params = new URLSearchParams(window.location.search);
+            params.set("mode", mode);
+            params.set("sysType", sysType);
+            if (mode === "bill") {
+                params.set("bill", billVal);
+                params.delete("units");
+            } else {
+                params.set("units", unitsVal);
+                params.delete("bill");
+            }
+            if (roofVal) params.set("roof", roofVal);
+            params.set("autoCalc", "1");
+            window.history.replaceState(null, "", `?${params.toString()}`);
+        }
+
         setResult(calc);
         setTimeout(() => {
             resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -102,6 +122,7 @@ export default function SolarCalculatorClient({
             });
             router.push(`/calculator?${params.toString()}`);
         } else {
+            // If already on the calculator page, just run and update the URL
             doCalculate();
         }
     }
@@ -247,7 +268,32 @@ export default function SolarCalculatorClient({
                         </div>
                     )}
 
-                    <ResultsDisplay result={result} sysType={sysType} maxCum={maxCum} />
+                    <ResultsDisplay
+                        key={JSON.stringify({ ...result, barData: [] })}
+                        result={result}
+                        sysType={sysType}
+                        maxCum={maxCum}
+                    />
+
+                    {/* WhatsApp CTA */}
+                    <div className="rounded-2xl border border-primary/20 bg-primary/5 p-6 text-center animate-slide-up" style={{ animationDelay: '200ms' }}>
+                        <h3 className="text-lg font-bold text-foreground">Your estimate is ready.</h3>
+                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                            Want an exact quote for your home or business? Chat with our Karachi solar specialist on WhatsApp — free, no obligation, straight answers.
+                        </p>
+                        <Link
+                            href={`https://wa.me/923001234567?text=${encodeURIComponent(
+                                `Hi, I used the calculator on your site. My monthly bill is Rs. ${mode === 'bill' ? billVal : fmt(result.kwh * 50)} and I'm interested in a ${sysType === 'ongrid' ? 'On-grid' : 'Hybrid'} system.`
+                            )}`}
+                            target="_blank"
+                            className="mt-5 block"
+                        >
+                            <Button className="w-full h-11 gap-2 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-white border-none shadow-lg shadow-[#25D366]/20">
+                                <span className="text-base font-semibold">Chat on WhatsApp</span>
+                                <ArrowRight className="h-4 w-4" />
+                            </Button>
+                        </Link>
+                    </div>
 
                     <Button variant="outline" onClick={reset} className="w-full rounded-xl">
                         <RotateCcw className="mr-2 h-4 w-4" />
@@ -361,10 +407,10 @@ export function ResultsDisplay({
                             ["Self-consumed", `${fmt(result.selfConsume)} kWh/month`],
                             ["Exported to grid", sysType === "hybrid" ? "Minimal (battery stores excess)" : `${fmt(result.exported)} kWh/month`],
                             ["Installation cost", `Rs. ${fmt(result.totalCost)}`],
-                            ["Monthly savings", `Rs. ${fmt(result.monthlySavings)}`],
-                            ["Annual savings", `Rs. ${fmt(result.annualSavings)}`],
+                            ["Bill reduction", `Rs. ${fmt(result.billReduction)}/mo`],
+                            ["Export revenue", `Rs. ${fmt(result.exportRevenue)}/mo`],
+                            ["Annual benefit", `Rs. ${fmt(result.annualSavings)}`],
                             ["Payback period", `${result.payback.toFixed(1)} years`],
-                            ["25-year total savings", `Rs. ${fmt(result.totalLifeSavings)}`],
                             ["25-year ROI", `${result.roi.toFixed(0)}%`],
                             ["Roof space needed", `${result.roofNeeded} sq ft`],
                         ] as [string, string][]

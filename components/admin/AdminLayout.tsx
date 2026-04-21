@@ -19,6 +19,8 @@ const navItems = [
     { href: '/admin/categories', label: 'Categories', icon: FileText },
     { href: '/admin/users', label: 'Users', icon: Users },
     { href: '/admin/inquiries', label: 'Inquiries', icon: MessageSquare },
+    { href: '/admin/services', label: 'Services', icon: Sun },
+    { href: '/admin/faqs', label: 'FAQs', icon: MessageSquare },
     { href: '/admin/blogs', label: 'Blog Posts', icon: FileText },
     { href: '/admin/calculator-settings', label: 'Calculator Settings', icon: Settings2 },
 ];

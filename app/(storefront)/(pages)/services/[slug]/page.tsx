@@ -1,10 +1,19 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { servicesData } from '@/lib/services';
+import { getServiceBySlug, getAllServices } from '@/app/models/service.model';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ArrowRight } from 'lucide-react';
+import { CheckCircle2, ArrowRight, Sun, Zap, Battery, Wrench, BarChart3, Shield, Globe2, Clock, Settings, Heart, DollarSign, Info, Headphones } from 'lucide-react';
 import Link from 'next/link';
+
+// Icon mapping helper
+const iconMap: Record<string, any> = {
+  Sun, Zap, Battery, Wrench, BarChart3, Shield, CheckCircle2, Heart, TrendingUp: ArrowRight, Clock, Settings, Headphones, Globe2, DollarSign, Info
+};
+
+function getIcon(name: string) {
+  return iconMap[name] || Sun;
+}
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -12,25 +21,25 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const service = servicesData[slug];
+  const service = await getServiceBySlug(slug);
 
   if (!service) return { title: 'Service Not Found' };
 
   return {
     title: `${service.title} — PakSolarTech`,
-    description: service.shortDesc,
+    description: service.short_desc,
   };
 }
 
 export default async function ServicePage({ params }: Props) {
   const { slug } = await params;
-  const service = servicesData[slug];
+  const service = await getServiceBySlug(slug);
 
   if (!service) {
     notFound();
   }
 
-  const Icon = service.icon;
+  const Icon = getIcon(service.icon);
 
   return (
     <main className="min-h-screen bg-background pt-32 pb-20">
@@ -50,7 +59,7 @@ export default async function ServicePage({ params }: Props) {
               ))}
             </h1>
             <p className="mb-8 text-xl leading-relaxed text-muted-foreground">
-              {service.longDesc}
+              {service.long_desc}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/contact">
@@ -71,7 +80,7 @@ export default async function ServicePage({ params }: Props) {
             <div className="absolute -inset-1 rounded-3xl bg-linear-to-r from-primary/20 to-chart-2/20 blur-xl opacity-50 transition duration-500 group-hover:opacity-75" />
             <div className="relative overflow-hidden rounded-3xl border border-border/50 bg-card aspect-video">
               <img
-                src={service.image}
+                src={service.image_url}
                 alt={service.title}
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
@@ -107,21 +116,24 @@ export default async function ServicePage({ params }: Props) {
             <p className="mt-4 text-muted-foreground">The impact of switching to {service.title.toLowerCase()} with PakSolarTech.</p>
           </div>
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {service.benefits.map((benefit, i) => (
-              <div key={i} className="group rounded-2xl border border-border/50 bg-card/50 p-8 transition-all hover:border-primary/30 hover:bg-card">
-                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-                  <benefit.icon className="h-7 w-7 text-primary" />
+            {service.benefits.map((benefit, i) => {
+              const BenIcon = getIcon(benefit.icon);
+              return (
+                <div key={i} className="group rounded-2xl border border-border/50 bg-card/50 p-8 transition-all hover:border-primary/30 hover:bg-card">
+                  <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 transition-colors group-hover:bg-primary/20">
+                    <BenIcon className="h-7 w-7 text-primary" />
+                  </div>
+                  <h3 className="mb-3 text-xl font-bold">{benefit.title}</h3>
+                  <p className="leading-relaxed text-muted-foreground">{benefit.desc}</p>
                 </div>
-                <h3 className="mb-3 text-xl font-bold">{benefit.title}</h3>
-                <p className="leading-relaxed text-muted-foreground">{benefit.desc}</p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* ── PROCESS SECTION (IF AVAILABLE) ── */}
-      {service.process && (
+      {service.process && service.process.length > 0 && (
         <section className="section-padding bg-muted/20">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="mb-16 text-center">
@@ -169,7 +181,6 @@ export default async function ServicePage({ params }: Props) {
               </Link>
             </div>
           </div>
-          {/* Background decoration */}
           <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
           <div className="absolute -bottom-20 -right-20 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
         </div>
@@ -179,7 +190,9 @@ export default async function ServicePage({ params }: Props) {
 }
 
 export async function generateStaticParams() {
-  return Object.keys(servicesData).map((slug) => ({
-    slug,
+  const services = await getAllServices();
+  return services.map((s) => ({
+    slug: s.slug,
   }));
 }
+

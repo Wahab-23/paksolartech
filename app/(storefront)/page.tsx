@@ -1,16 +1,17 @@
 import { Metadata } from 'next';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import {
   Sun, Zap, Battery, Wrench, BarChart3, Shield,
-  CheckCircle2, Mail, Phone, Sparkles, Globe2, Users, TrendingUp, ArrowRight
+  CheckCircle2, Mail, Phone, Sparkles, Globe2, Users, TrendingUp, TrendingDown, ArrowRight, HelpCircle
 } from 'lucide-react';
 import Link from 'next/link';
 import HeroButtons from '@/components/public/HeroButtons';
-import ProductCard from '@/components/public/ProductCard';
-import { getFeaturedProducts, type FeaturedProduct } from '@/app/models/product.model';
+import { getFeaturedProducts } from '@/app/models/product.model';
 import SolarCalculatorClient from '@/components/calculator/SolarCalculatorClient';
 import DeferredContactSection from '@/components/public/DeferredContactSection';
+import { getAllServices, Service } from '@/app/models/service.model';
+import { getAllFAQs } from '@/app/models/faq.model';
+import FAQSection from '@/components/public/FAQSection';
 
 export const metadata: Metadata = {
   title: 'PakSolarTech — #1 Solar Energy Company in Pakistan',
@@ -18,56 +19,16 @@ export const metadata: Metadata = {
   keywords: 'solar energy Pakistan, best solar company, residential solar panels, commercial solar installation, net metering Pakistan',
 };
 
-/* ──────────────── SERVICE DATA ──────────────── */
-const services = [
-  {
-    slug: 'residential-solar',
-    icon: Sun,
-    title: 'Residential Solar',
-    desc: 'Power your home with clean, affordable solar energy. Custom-designed rooftop systems tailored to your needs.',
-  },
-  {
-    slug: 'commercial-solar',
-    icon: Zap,
-    title: 'Commercial Solar',
-    desc: 'Reduce operational costs with large-scale solar installations for businesses and industrial facilities.',
-  },
-  {
-    slug: 'battery-storage',
-    icon: Battery,
-    title: 'Battery Storage',
-    desc: 'Store excess solar energy for use during peak hours or power outages with advanced battery solutions.',
-  },
-  {
-    slug: 'maintenance-repair',
-    icon: Wrench,
-    title: 'Maintenance & Repair',
-    desc: 'Keep your solar system running at peak performance with our expert maintenance and repair services.',
-  },
-  {
-    slug: 'energy-consulting',
-    icon: BarChart3,
-    title: 'Energy Consulting',
-    desc: 'Get expert advice on energy optimization, system sizing, and maximizing your solar investment ROI.',
-  },
-  {
-    slug: 'warranty-support',
-    icon: Shield,
-    title: 'Warranty & Support',
-    desc: 'Industry-leading warranties and 24/7 customer support to ensure your peace of mind.',
-  },
-];
-
 const stats = [
-  { value: '500+', label: 'Installations', icon: Sun },
-  { value: '10MW+', label: 'Power Generated', icon: Zap },
-  { value: '98%', label: 'Client Satisfaction', icon: Users },
-  { value: '15+', label: 'Years Experience', icon: TrendingUp },
+  { value: 'Tier-1 Panels Only', label: 'Longi, JA Solar, Canadian Solar. No grey market stock.', icon: Sun },
+  { value: '25-Year Warranty', label: 'Manufacturer guarantee on every panel we install.', icon: Shield },
+  { value: 'Net Metering Handled', label: 'We do the paperwork, you collect the credits.', icon: CheckCircle2 },
+  { value: 'Full Transparency', label: 'Itemized quotes. No hidden charges.', icon: BarChart3 },
 ];
 
-/* ══════════════ HOME PAGE ══════════════ */
 export default async function Home() {
-  const featuredProducts = await getFeaturedProducts({ limit: 4 });
+  const services = await getAllServices();
+  const faqs = await getAllFAQs();
 
   return (
     <>
@@ -83,146 +44,132 @@ export default async function Home() {
           }}
         />
         <HeroSection />
+        <StatsSection />
         <CalculatorSection />
-        {/* {featuredProducts.length > 0 && <FeaturedProductsSection products={featuredProducts} />} */}
-        <ServicesSection />
+        <ServicesSection services={services} />
+        <TrustSection />
         <AboutSection />
+        <FAQSection faqs={faqs} />
         <ContactSection />
       </main>
     </>
   );
 }
 
-/* ──────────────── HERO ──────────────── */
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background Effects */}
-      {/* <div className="absolute inset-0">
-        <div className="absolute left-1/4 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/5 blur-[120px]" />
-        <div className="absolute right-1/4 bottom-1/4 h-[400px] w-[400px] rounded-full bg-chart-2/5 blur-[100px]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,var(--background)_70%)]" />
-      </div> */}
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 lg:pt-0">
+      {/* Background Ambient Glows */}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-[20%] -left-[10%] h-[500px] w-[500px] rounded-full bg-primary/20 blur-[120px] animate-pulse-slow" />
+        <div className="absolute bottom-[20%] -right-[10%] h-[400px] w-[400px] rounded-full bg-chart-2/10 blur-[120px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
+      </div>
 
-      {/* Grid pattern overlay */}
-      <div className="absolute inset-0 opacity-[0.03]"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)',
-          backgroundSize: '60px 60px',
-        }}
-      />
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          
+          {/* Left Column: Content */}
+          <div className="flex flex-col items-start text-left">
+            <Badge
+              variant="outline"
+              className="mb-6 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary animate-fade-in"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              #1 Rated Solar Installer in Karachi
+            </Badge>
 
-      <div className="relative mx-auto max-w-7xl px-4 py-32 sm:px-6 lg:px-8">
-        <div className="max-w-3xl">
-          <Badge variant="outline" className="mb-6 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
-            <Sparkles className="h-3.5 w-3.5" />
-            Pakistan&apos;s Most Trusted Solar Company
-          </Badge>
+            <h1 className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl animate-slide-up leading-[1.1]">
+              Stop Paying <br />
+              <span className="text-destructive font-extrabold italic">Expensive Bills</span>. <br />
+              Start <span className="text-gradient">Owning Power</span>.
+            </h1>
 
-          <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-7xl">
-            Harness The <br />
-            <span className="text-gradient">Power Of The Sun</span>
-          </h1>
+            <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground animate-slide-up" style={{ animationDelay: '200ms' }}>
+              Karachi gets 5.5 hours of peak sun daily — enough to cut your electricity bill by 70–90%, permanently. Calculate your savings below and talk to a specialist on WhatsApp today.
+            </p>
 
-          <p className="mb-8 max-w-xl text-lg leading-relaxed text-muted-foreground">
-            Transform your energy future with cutting-edge solar technology.
-            Save up to 90% on electricity bills while contributing to a greener Pakistan.
-          </p>
-
-          <HeroButtons />
-
-          {/* Trust badges */}
-          <div className="mt-12 flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-primary" />
-              Site Survey
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-primary" />
-              25 Year Warranty
-            </div>
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-primary" />
-              Net Metering Ready
+            <div className="mt-10 animate-slide-up" style={{ animationDelay: '400ms' }}>
+              <HeroButtons />
             </div>
           </div>
-        </div>
 
-        {/* Floating solar panel illustration */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden lg:block">
-          <div className="relative">
-            <div className="h-72 w-72 rounded-3xl border border-primary/20 bg-linear-to-br from-primary/10 to-transparent p-8">
-              <div className="grid h-full w-full grid-cols-3 grid-rows-3 gap-2">
-                {Array.from({ length: 9 }).map((_, i) => (
-                  <div key={i} className="rounded-md bg-primary/20 transition-colors hover:bg-primary/30" />
-                ))}
+          {/* Right Column: Floating Visuals */}
+          <div className="relative h-[500px] hidden lg:flex items-center justify-center">
+            {/* Main Decorative Element */}
+            <div className="relative w-full max-w-md aspect-square rounded-[3rem] bg-linear-to-br from-primary/10 to-chart-2/5 border border-white/10 glass shadow-2xl flex items-center justify-center animate-float">
+              <Sun className="w-32 h-32 text-primary opacity-20 animate-pulse-slow" />
+
+              {/* Floating Card 1: Savings */}
+              <div className="absolute -top-4 -right-8 glass rounded-2xl border border-white/20 p-5 shadow-2xl animate-float-delayed w-48">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-lg bg-green-500/20">
+                    <TrendingDown className="w-5 h-5 text-green-500" />
+                  </div>
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Bill Offset</span>
+                </div>
+                <div className="text-2xl font-bold">Up to 90%</div>
+                <div className="w-full h-1 bg-muted rounded-full mt-3 overflow-hidden">
+                  <div className="h-full bg-green-500 w-[90%]" />
+                </div>
+              </div>
+
+              {/* Floating Card 2: Warranty */}
+              <div className="absolute bottom-12 -left-12 glass rounded-2xl border border-white/20 p-5 shadow-2xl animate-float w-52">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-lg bg-primary/20">
+                    <Shield className="w-5 h-5 text-primary" />
+                  </div>
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Guarantee</span>
+                </div>
+                <div className="text-xl font-bold italic text-foreground">25 Year Warranty</div>
+                <p className="text-[10px] text-muted-foreground mt-1">On Tier-1 Panels & Inverters</p>
+              </div>
+
+              {/* Floating Card 3: Live Units */}
+              <div className="absolute top-1/2 -translate-y-1/2 -right-16 glass rounded-2xl border border-white/20 p-5 shadow-2xl animate-float-slow w-44">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="p-2 rounded-lg bg-yellow-500/20">
+                    <Zap className="w-5 h-5 text-yellow-500" />
+                  </div>
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Current Gen</span>
+                </div>
+                <div className="text-xl font-bold text-foreground">5.5 kWh</div>
+                <div className="text-[10px] text-green-500 font-medium">● System Online</div>
               </div>
             </div>
-            <div className="absolute -bottom-4 -left-4 flex h-20 w-20 items-center justify-center rounded-2xl border border-yellow-400/30 bg-yellow-400/10">
-              <Sun className="h-8 w-8 text-yellow-400" />
-            </div>
-            <div className="absolute -right-4 -top-4 h-16 w-16 rounded-2xl border border-chart-2/30 bg-chart-2/10 flex items-center justify-center">
-              <Zap className="h-6 w-6 text-chart-2" />
-            </div>
+
+            {/* Background decorative circles */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-primary/5 rounded-full blur-3xl -z-10" />
           </div>
+
         </div>
       </div>
     </section>
   );
 }
 
-/* ──────────────── CALCULATOR ──────────────── */
-function CalculatorSection() {
+function StatsSection() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8">
-      <div className="flex flex-wrap items-end justify-between gap-4 mb-2">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Calculate Your Savings</h2>
-          <p className="mt-3 text-muted-foreground">
-            Enter your details below — we&apos;ll calculate the perfect solar system for you.
-          </p>
-        </div>
-        <Link href="/calculator" className="text-sm text-primary hover:underline underline-offset-4 flex items-center gap-1 shrink-0">
-          Open full calculator
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
-      </div>
-      <SolarCalculatorClient redirectMode />
-    </section>
-  );
-}
-
-
-
-/* ──────────────── FEATURED PRODUCTS ──────────────── */
-function FeaturedProductsSection({ products }: { products: FeaturedProduct[] }) {
-  return (
-    <section className="section-padding bg-muted/20">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="max-w-2xl">
-            <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
-              <Sparkles className="h-3.5 w-3.5" />
-              Top Rated Panels
-            </Badge>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Featured <span className="text-gradient">Products</span>
-            </h2>
-            <p className="mt-4 text-muted-foreground">
-              Our hand-picked selection of high-efficiency solar panels and components for optimal energy yield.
-            </p>
-          </div>
-          <Link href="/products">
-            <Button variant="ghost" className="gap-2 text-primary hover:text-primary hover:bg-primary/5">
-              View All Products
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
-        </div>
-
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {products.map((p) => (
-            <ProductCard key={p.id} product={p} />
+    <section className="relative py-12 border-y border-border/50 bg-muted/10">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 stagger-children">
+          {stats.map((stat, i) => (
+            <div
+              key={i}
+              className="group relative flex flex-col gap-3 rounded-2xl border border-border/50 bg-card/50 p-6 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-xl hover:shadow-primary/5 animate-slide-up"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 transition-colors group-hover:bg-primary/20">
+                <stat.icon className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-foreground">
+                  {stat.value}
+                </h3>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  {stat.label}
+                </p>
+              </div>
+            </div>
           ))}
         </div>
       </div>
@@ -230,12 +177,70 @@ function FeaturedProductsSection({ products }: { products: FeaturedProduct[] }) 
   );
 }
 
-/* ──────────────── SERVICES ──────────────── */
-function ServicesSection() {
+function CalculatorSection() {
+  return (
+    <section id="calculator" className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
+      <div className="mb-12 text-center">
+        <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
+          <TrendingUp className="h-3.5 w-3.5" />
+          Solar Savings Calculator
+        </Badge>
+        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Calculate Your Savings</h2>
+        <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+          Enter your average bill — we&apos;ll estimate your ideal system size, installation cost, and payback period.
+        </p>
+      </div>
+      <SolarCalculatorClient redirectMode={false} />
+    </section>
+  );
+}
+
+function TrustSection() {
+  const steps = [
+    { title: 'Chat with us on WhatsApp', desc: 'Tell us your bill, your area, and your roof type.' },
+    { title: 'Itemized Quote', desc: 'We send you a detailed, transparent quote within 24 hours.' },
+    { title: 'Review & Compare', desc: 'Review panel brands, inverter specs, and total cost.' },
+    { title: 'Zero Pressure Decision', desc: 'Take your time to decide — we are here to help, not push.' },
+    { title: 'Installation & Credits', desc: 'We handle everything from installation to official net metering.' },
+  ];
+
+  return (
+    <section className="section-padding bg-muted/20">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-12 text-center">
+          <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            Our Process
+          </Badge>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Here&apos;s exactly what happens next</h2>
+        </div>
+
+        <div className="space-y-6">
+          {steps.map((step, i) => (
+            <div
+              key={i}
+              className="flex items-start gap-4 rounded-2xl border border-border/50 bg-card/50 p-6 transition-all hover:border-primary/30"
+            >
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
+                {i + 1}
+              </div>
+              <div>
+                <h3 className="font-bold text-foreground">{step.title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{step.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ServicesSection({ services }: { services: Service[] }) {
+  const iconMap: any = { Sun, Zap, Battery, Wrench, BarChart3, Shield };
+
   return (
     <section id="services" className="section-padding relative">
-      <div className="absolute" />
-
       <div className="relative mx-auto max-w-7xl">
         <div className="mb-12 text-center">
           <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
@@ -251,38 +256,36 @@ function ServicesSection() {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
-          {services.map((s) => (
-            <Link 
-              key={s.slug} 
-              href={`/services/${s.slug}`}
-              className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 p-6 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-lg hover:shadow-primary/5 animate-slide-up"
-            >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-                <s.icon className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="mb-2 text-lg font-semibold flex items-center justify-between">
-                {s.title}
-                <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
-              </h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">{s.desc}</p>
-
-              {/* Hover glow accent */}
-              <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-primary/5 opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
-            </Link>
-          ))}
+          {services.map((s) => {
+            const Icon = iconMap[s.icon] || Sun;
+            return (
+              <Link
+                key={s.slug}
+                href={`/services/${s.slug}`}
+                className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card/50 p-6 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-lg hover:shadow-primary/5 animate-slide-up"
+              >
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
+                  <Icon className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="mb-2 text-lg font-semibold flex items-center justify-between">
+                  {s.title}
+                  <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 transition-all group-hover:opacity-100 group-hover:translate-x-0" />
+                </h3>
+                <p className="text-sm leading-relaxed text-muted-foreground line-clamp-2">{s.short_desc}</p>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>
   );
 }
 
-/* ──────────────── ABOUT ──────────────── */
 function AboutSection() {
   return (
     <section id="about" className="section-padding">
       <div className="mx-auto max-w-7xl">
         <div className="grid items-center gap-12 lg:grid-cols-2">
-          {/* Left — Content */}
           <div>
             <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
               <Users className="h-3.5 w-3.5" />
@@ -313,20 +316,17 @@ function AboutSection() {
             </ul>
           </div>
 
-          {/* Right — Stats */}
-          <div className="grid grid-cols-2 gap-4">
-            {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="group rounded-2xl border border-border/50 bg-card/50 p-6 text-center transition-all hover:border-primary/30 hover:bg-card hover:shadow-lg hover:shadow-primary/5"
-              >
-                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-                  <stat.icon className="h-6 w-6 text-primary" />
-                </div>
-                <p className="text-3xl font-extrabold text-gradient">{stat.value}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{stat.label}</p>
-              </div>
-            ))}
+          <div className="relative aspect-square overflow-hidden rounded-3xl border border-border/50">
+            <img
+              src="https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?auto=format&fit=crop&q=80&w=1000"
+              alt="Solar Panels Installation"
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+            <div className="absolute bottom-8 left-8">
+              <p className="text-4xl font-bold text-white">15+</p>
+              <p className="text-sm text-white/80">Years of Experience</p>
+            </div>
           </div>
         </div>
       </div>
@@ -334,7 +334,6 @@ function AboutSection() {
   );
 }
 
-/* ──────────────── CONTACT ──────────────── */
 function ContactSection() {
   return (
     <section id="contact" className="section-padding relative">
@@ -342,7 +341,6 @@ function ContactSection() {
 
       <div className="relative mx-auto max-w-7xl">
         <div className="grid gap-12 lg:grid-cols-2">
-          {/* Left — Info */}
           <div>
             <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
               <Mail className="h-3.5 w-3.5" />
@@ -378,7 +376,6 @@ function ContactSection() {
             </div>
           </div>
 
-          {/* Right — Form (Client Component) */}
           <DeferredContactSection />
         </div>
       </div>

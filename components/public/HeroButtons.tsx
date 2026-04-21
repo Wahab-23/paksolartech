@@ -7,19 +7,19 @@ import Link from "next/link";
 export default function HeroButtons() {
     return (
         <div className="flex flex-wrap gap-4 animate-slide-up" style={{ animationDelay: "400ms" }}>
-            <Link href="/contact">
+            <Link href="/calculator">
                 <Button size="lg" className="gap-2 glow text-base">
-                    Get A Quote
+                    Calculate My Savings
                     <ArrowRight className="h-4 w-4" />
                 </Button>
             </Link>
-            <Link href="/services">
+            <Link href="https://wa.me/923001234567" target="_blank">
                 <Button
                     size="lg"
                     variant="outline"
                     className="gap-2 text-base border-primary/30 hover:bg-primary/10"
                 >
-                    Our Services
+                    Chat With Us on WhatsApp
                 </Button>
             </Link>
         </div>

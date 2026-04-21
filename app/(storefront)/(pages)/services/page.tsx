@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
-import { servicesData } from '@/lib/services';
+import { getAllServices } from '@/app/models/service.model';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Globe2, ArrowRight, CheckCircle2, Shield, Zap, Sun } from 'lucide-react';
+import { Globe2, ArrowRight, CheckCircle2, Shield, Zap, Sun, Battery, Wrench, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: 'Comprehensive solar energy solutions in Pakistan. From residential and commercial installations to battery storage and energy consulting.',
   keywords: 'solar services Pakistan, residential solar, commercial solar, battery storage Karachi, solar maintenance',
 };
+
+const iconMap: any = { Sun, Zap, Battery, Wrench, BarChart3, Shield };
 
 const valueProps = [
   {
@@ -29,8 +31,8 @@ const valueProps = [
   }
 ];
 
-export default function AllServicesPage() {
-  const services = Object.values(servicesData);
+export default async function AllServicesPage() {
+  const services = await getAllServices();
 
   return (
     <main className="min-h-screen bg-background pt-32 pb-20">
@@ -52,42 +54,45 @@ export default function AllServicesPage() {
       {/* ── SERVICES GRID ── */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-32">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((s) => (
-            <Link 
-              key={s.slug} 
-              href={`/services/${s.slug}`}
-              className="group flex flex-col overflow-hidden rounded-3xl border border-border/50 bg-card/50 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-2xl hover:shadow-primary/5"
-            >
-              {/* Image Header */}
-              <div className="relative aspect-[16/10] overflow-hidden">
-                <img 
-                  src={s.image} 
-                  alt={s.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-60" />
-                <div className="absolute bottom-4 left-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lg">
-                    <s.icon className="h-5 w-5" />
+          {services.map((s) => {
+            const Icon = iconMap[s.icon] || Sun;
+            return (
+              <Link 
+                key={s.slug} 
+                href={`/services/${s.slug}`}
+                className="group flex flex-col overflow-hidden rounded-3xl border border-border/50 bg-card/50 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-2xl hover:shadow-primary/5"
+              >
+                {/* Image Header */}
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <img 
+                    src={s.image_url} 
+                    alt={s.title}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-60" />
+                  <div className="absolute bottom-4 left-4">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-white shadow-lg">
+                      <Icon className="h-5 w-5" />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Content */}
-              <div className="flex flex-1 flex-col p-8">
-                <h3 className="mb-3 text-2xl font-bold transition-colors group-hover:text-primary">
-                  {s.title}
-                </h3>
-                <p className="mb-6 flex-1 leading-relaxed text-muted-foreground">
-                  {s.shortDesc}
-                </p>
-                <div className="flex items-center gap-2 font-bold text-primary">
-                  <span>View Details</span>
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                {/* Content */}
+                <div className="flex flex-1 flex-col p-8">
+                  <h3 className="mb-3 text-2xl font-bold transition-colors group-hover:text-primary">
+                    {s.title}
+                  </h3>
+                  <p className="mb-6 flex-1 leading-relaxed text-muted-foreground">
+                    {s.short_desc}
+                  </p>
+                  <div className="flex items-center gap-2 font-bold text-primary">
+                    <span>View Details</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </section>
 
@@ -172,3 +177,4 @@ export default function AllServicesPage() {
     </main>
   );
 }
+

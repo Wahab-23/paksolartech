@@ -6,6 +6,7 @@ const quickLinks = [
     { href: '/', label: 'Home' },
     { href: '/services', label: 'Services' },
     { href: '/about', label: 'About Us' },
+    { href: '/blog', label: 'Blog' },
     { href: '/contact', label: 'Contact' },
 ];
 
@@ -71,7 +72,7 @@ export default function Footer() {
                         <ul className="space-y-3">
                             <li className="flex items-start gap-3 text-sm text-muted-foreground">
                                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                                Lahore, Punjab, Pakistan
+                                Karachi, Sindh, Pakistan
                             </li>
                             <li className="flex items-center gap-3 text-sm text-muted-foreground">
                                 <Phone className="h-4 w-4 shrink-0 text-primary" />

@@ -1,7 +1,8 @@
 import { MetadataRoute } from 'next';
-import { servicesData } from '@/lib/services';
+import { getAllServices } from '@/app/models/service.model';
+import { getAllBlogs } from '@/app/models/blog.model';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://paksolartech.com';
 
   // Static routes
@@ -11,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/about',
     '/contact',
     '/calculator',
+    '/blog',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
@@ -19,12 +21,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Dynamic service routes
-  const serviceRoutes = Object.keys(servicesData).map((slug) => ({
-    url: `${baseUrl}/services/${slug}`,
-    lastModified: new Date(),
+  const services = await getAllServices();
+  const serviceRoutes = services.map((s) => ({
+    url: `${baseUrl}/services/${s.slug}`,
+    lastModified: new Date(s.updated_at || s.created_at),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
 
-  return [...staticRoutes, ...serviceRoutes];
+  // Dynamic blog routes
+  let blogRoutes: any[] = [];
+  try {
+    const blogs = await getAllBlogs({ publishedOnly: true });
+    blogRoutes = (blogs as any[]).map((blog) => ({
+      url: `${baseUrl}/blog/${blog.slug}`,
+      lastModified: new Date(blog.updated_at || blog.created_at),
+      changeFrequency: 'weekly' as const,
+      priority: 0.6,
+    }));
+  } catch (error) {
+    console.error('Sitemap: Failed to fetch blogs', error);
+  }
+
+  return [...staticRoutes, ...serviceRoutes, ...blogRoutes];
 }

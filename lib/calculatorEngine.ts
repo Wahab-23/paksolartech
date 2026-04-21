@@ -23,7 +23,9 @@ export interface CalcResult {
     monthlyGen: number;
     selfConsume: number;
     exported: number;
-    monthlySavings: number;
+    monthlySavings: number; // Total Financial Benefit
+    billReduction: number;
+    exportRevenue: number;
     annualSavings: number;
     payback: number;
     totalLifeSavings: number;
@@ -49,7 +51,7 @@ export function getKwhFromBill(bill: number, slabs: TariffSlab[]): number {
         }
         cost += isLast ? 0 : slabCost;
     }
-    return Math.round(bill / 8);
+    return Math.round(bill / 50);
 }
 
 export function getSlabLabel(kwh: number, slabs: TariffSlab[]): string {
@@ -65,6 +67,31 @@ export function getSlabLabel(kwh: number, slabs: TariffSlab[]): string {
 
 export function fmt(n: number): string {
     return Math.round(n).toLocaleString('en-PK');
+}
+
+// ─── Main calculation engine ───────────────────────────────────────────────────
+
+export function getBillFromKwh(kwh: number, slabs: TariffSlab[]): number {
+    let bill = 0;
+    let remaining = kwh;
+    for (let i = 0; i < slabs.length; i++) {
+        const from = i === 0 ? 0 : slabs[i - 1].limit;
+        const to = slabs[i].limit;
+        const slabUnits = to - from;
+
+        if (remaining <= slabUnits) {
+            bill += remaining * slabs[i].rate;
+            remaining = 0;
+            break;
+        } else {
+            bill += slabUnits * slabs[i].rate;
+            remaining -= slabUnits;
+        }
+    }
+    if (remaining > 0) {
+        bill += remaining * slabs[slabs.length - 1].rate;
+    }
+    return bill;
 }
 
 // ─── Main calculation engine ───────────────────────────────────────────────────
@@ -90,6 +117,7 @@ export function runCalculation(
         tariff_slabs,
     } = settings;
 
+    // We want to cover roughly 100% of the consumption, but let's be smart about it.
     let sizeKw = kwh / (peak_sun_hours * days_per_month * system_efficiency);
     sizeKw = Math.ceil(sizeKw * 2) / 2;
 
@@ -103,11 +131,22 @@ export function runCalculation(
     const costPerKw = sysType === 'hybrid' ? hybrid_cost_per_kw : ongrid_cost_per_kw;
     const totalCost = sizeKw * costPerKw;
 
-    const tariff = sysType === 'hybrid' ? hybrid_tariff_rate : ongrid_tariff_rate;
+    const currentBill = getBillFromKwh(kwh, tariff_slabs);
     const monthlyGen = sizeKw * peak_sun_hours * days_per_month * system_efficiency;
-    const selfConsume = Math.min(kwh, monthlyGen) * 0.7;
-    const exported = sysType === 'hybrid' ? 0 : Math.max(0, monthlyGen - selfConsume);
-    const monthlySavings = selfConsume * tariff + exported * export_rate;
+    
+    // Financial logic:
+    // 1. Bill Reduction: Saving the cost of imported units.
+    // 2. Export Revenue: Getting paid for extra units.
+    
+    const selfConsumedKwh = Math.min(kwh, monthlyGen) * 0.7; // 70% daytime usage assumption
+    const importedKwh = Math.max(0, kwh - selfConsumedKwh);
+    const exportedKwh = sysType === 'hybrid' ? 0 : Math.max(0, monthlyGen - selfConsumedKwh);
+    
+    const costOfImported = getBillFromKwh(importedKwh, tariff_slabs);
+    const billReduction = currentBill - costOfImported;
+    const exportRevenue = exportedKwh * export_rate;
+    
+    const monthlySavings = billReduction + exportRevenue;
     const annualSavings = monthlySavings * 12;
     const payback = annualSavings > 0 ? totalCost / annualSavings : 0;
 
@@ -131,9 +170,11 @@ export function runCalculation(
         sizeKw,
         totalCost,
         monthlyGen,
-        selfConsume,
-        exported,
+        selfConsume: selfConsumedKwh,
+        exported: exportedKwh,
         monthlySavings,
+        billReduction,
+        exportRevenue,
         annualSavings,
         payback,
         totalLifeSavings,
