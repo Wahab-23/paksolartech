@@ -20,10 +20,11 @@ const BlockNoteRenderer = ({ data }: BlockNoteRendererProps) => {
 
     return (
       <div
-        className="prose prose-sm max-w-none text-foreground leading-relaxed 
+        className="prose prose-base max-w-none text-foreground leading-relaxed 
                    prose-headings:text-black dark:prose-headings:text-white prose-headings:font-bold
-                   prose-p:mb-4 prose-p:leading-relaxed
+                   prose-p:mb-6 prose-p:leading-relaxed
                    prose-pre:bg-muted/50 prose-pre:rounded-xl
+                   prose-img:rounded-2xl
                    dark:prose-invert"
         dangerouslySetInnerHTML={{ __html: html }}
       />

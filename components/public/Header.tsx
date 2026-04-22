@@ -11,9 +11,11 @@ const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/services', label: 'Services' },
     { href: '/about', label: 'About' },
+    { href: '/calculator', label: 'Calculator' },
     { href: '/blog', label: 'Blog' },
     { href: '/contact', label: 'Contact' },
 ];
+
 
 export default function Header() {
     const [scrolled, setScrolled] = useState(false);

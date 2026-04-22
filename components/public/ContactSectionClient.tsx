@@ -79,7 +79,8 @@ export default function ContactSectionClient() {
             <Label htmlFor="phone">Phone Number</Label>
             <Input
               id="phone"
-              placeholder="+92 300 1234567"
+              placeholder="+92 311 1096664"
+
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
             />

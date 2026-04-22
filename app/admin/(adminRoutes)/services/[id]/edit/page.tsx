@@ -57,8 +57,12 @@ export default function EditServicePage({ params }: Props) {
         features: [] as string[],
         benefits: [] as { title: string; desc: string; icon: string }[],
         process: [] as { step: string; title: string; desc: string }[],
+        meta_title: '',
+        meta_description: '',
+        meta_keywords: '',
         faqs: [] as { question: string; answer: string }[]
     });
+
 
     useEffect(() => {
         const loadService = async () => {
@@ -266,6 +270,56 @@ export default function EditServicePage({ params }: Props) {
                             </div>
                         </CardContent>
                     </Card>
+
+                    {/* SEO Metadata */}
+                    <Card className="shadow-sm">
+                        <CardHeader className="pb-4">
+                            <div className="flex items-center gap-2">
+                                <div className="p-2 rounded-lg bg-muted text-muted-foreground">
+                                    <Globe2 className="h-5 w-5" />
+                                </div>
+                                <div>
+                                    <CardTitle>SEO & Meta</CardTitle>
+                                    <CardDescription>Search engine optimization settings</CardDescription>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="grid gap-6">
+                                <div className="grid gap-2">
+                                    <Label htmlFor="meta_title" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Meta Title</Label>
+                                    <Input 
+                                        id="meta_title"
+                                        value={form.meta_title} 
+                                        onChange={(e) => setForm({ ...form, meta_title: e.target.value })} 
+                                        placeholder="Custom title for search engines..."
+                                        className="h-11 bg-muted/20 border-border/50 focus:bg-background transition-all"
+                                    />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="meta_description" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Meta Description</Label>
+                                    <Textarea 
+                                        id="meta_description"
+                                        value={form.meta_description} 
+                                        onChange={(e) => setForm({ ...form, meta_description: e.target.value })} 
+                                        placeholder="Description for search engine snippets..."
+                                        className="bg-muted/20 border-border/50 focus:bg-background transition-all min-h-[100px]"
+                                    />
+                                </div>
+                                <div className="grid gap-2">
+                                    <Label htmlFor="meta_keywords" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Meta Keywords</Label>
+                                    <Input 
+                                        id="meta_keywords"
+                                        value={form.meta_keywords} 
+                                        onChange={(e) => setForm({ ...form, meta_keywords: e.target.value })} 
+                                        placeholder="keyword1, keyword2, keyword3"
+                                        className="h-11 bg-muted/20 border-border/50 focus:bg-background transition-all"
+                                    />
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
+
 
                     {/* Features */}
                     <Card className="shadow-sm">

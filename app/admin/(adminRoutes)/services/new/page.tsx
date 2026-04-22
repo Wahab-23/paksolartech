@@ -47,8 +47,12 @@ export default function NewServicePage() {
         features: [] as string[],
         benefits: [] as { title: string; desc: string; icon: string }[],
         process: [] as { step: string; title: string; desc: string }[],
-        faqs: [] as { question: string; answer: string }[]
+        faqs: [] as { question: string; answer: string }[],
+        meta_title: '',
+        meta_description: '',
+        meta_keywords: ''
     });
+
 
     const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -208,6 +212,42 @@ export default function NewServicePage() {
                             </div>
                         </div>
                     </div>
+
+                    {/* SEO Metadata */}
+                    <div className="rounded-xl border border-border/50 bg-card p-6 space-y-4">
+                        <h2 className="text-lg font-semibold">SEO & Meta</h2>
+                        <div className="space-y-4">
+                            <div className="grid gap-2">
+                                <Label htmlFor="meta_title">Meta Title</Label>
+                                <Input
+                                    id="meta_title"
+                                    value={form.meta_title}
+                                    onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
+                                    placeholder="Custom title for search engines..."
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="meta_description">Meta Description</Label>
+                                <Textarea
+                                    id="meta_description"
+                                    value={form.meta_description}
+                                    onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
+                                    placeholder="Description for search engine snippets..."
+                                    rows={3}
+                                />
+                            </div>
+                            <div className="grid gap-2">
+                                <Label htmlFor="meta_keywords">Meta Keywords</Label>
+                                <Input
+                                    id="meta_keywords"
+                                    value={form.meta_keywords}
+                                    onChange={(e) => setForm({ ...form, meta_keywords: e.target.value })}
+                                    placeholder="keyword1, keyword2, keyword3"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
 
                     {/* Features */}
                     <div className="rounded-xl border border-border/50 bg-card p-6 space-y-4">

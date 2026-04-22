@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: 'Contact Us — PakSolarTech',
   description: 'Get in touch with Pakistan\'s leading solar energy provider. Request a free quote, site survey, or technical support.',
   keywords: 'contact paksolartech, solar quote Pakistan, solar support, Karachi solar company',
+  alternates: {
+    canonical: '/contact',
+  },
 };
 
 const contactInfo = [
@@ -14,8 +17,9 @@ const contactInfo = [
     icon: Phone,
     title: 'Call Us',
     desc: 'Available Mon-Sat, 9am-6pm',
-    value: '+92 300 1234567',
-    href: 'tel:+923001234567'
+    value: '+92 311 1096664',
+    href: 'tel:+923111096664'
+
   },
   {
     icon: Mail,
@@ -26,11 +30,12 @@ const contactInfo = [
   },
   {
     icon: MapPin,
-    title: 'Visit Office',
-    desc: 'Karachi Head Office',
-    value: 'Plot 123, Sector 15, Korangi Industrial Area, Karachi',
+    title: 'Location',
+    desc: 'Pakistan',
+    value: 'Karachi, Pakistan',
     href: 'https://maps.google.com'
   },
+
   {
     icon: Clock,
     title: 'Working Hours',
@@ -39,9 +44,44 @@ const contactInfo = [
   }
 ];
 
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "PakSolarTech",
+  "telephone": "+92-311-1096664",
+  "email": "info@paksolartech.com",
+  "url": "https://paksolartech.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Karachi",
+    "addressCountry": "PK"
+  },
+  "openingHours": "Mo-Sa 09:00-18:00",
+  "priceRange": "$$"
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://paksolartech.com" },
+    { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://paksolartech.com/contact" }
+  ]
+};
+
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-background pt-32 pb-20">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <main className="min-h-screen bg-background pt-32 pb-20">
+
       {/* ── HERO SECTION ── */}
       <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-20 text-center">
         <Badge variant="outline" className="mb-6 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
@@ -98,5 +138,7 @@ export default function ContactPage() {
         </div>
       </section>
     </main>
+    </>
   );
 }
+

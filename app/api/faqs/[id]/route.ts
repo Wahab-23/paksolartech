@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
+
 import db from '@/app/lib/db';
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
@@ -11,7 +13,8 @@ export async function GET(req: NextRequest, { params }: Props) {
         const { id } = await params;
         const [rows] = await db.query<RowDataPacket[]>('SELECT * FROM faqs WHERE id = ?', [id]);
         if (rows.length === 0) return NextResponse.json({ error: 'FAQ not found' }, { status: 404 });
-        return NextResponse.json(rows[0]);
+        return NextResponse.json(rows[0], { status: 200 });
+
     } catch (error) {
         return NextResponse.json({ error: 'Failed to fetch FAQ' }, { status: 500 });
     }
@@ -28,7 +31,11 @@ export async function PUT(req: NextRequest, { params }: Props) {
             [question, answer, category, display_order, is_active, id]
         );
 
-        return NextResponse.json({ message: 'FAQ updated successfully' });
+        revalidateTag('faqs', 'max');
+
+        return NextResponse.json({ message: 'FAQ updated successfully' }, { status: 200 });
+
+
     } catch (error: any) {
         return NextResponse.json({ error: error.message || 'Failed to update FAQ' }, { status: 500 });
     }
@@ -38,7 +45,11 @@ export async function DELETE(req: NextRequest, { params }: Props) {
     try {
         const { id } = await params;
         await db.execute('DELETE FROM faqs WHERE id = ?', [id]);
-        return NextResponse.json({ message: 'FAQ deleted successfully' });
+        revalidateTag('faqs', 'max');
+
+        return NextResponse.json({ message: 'FAQ deleted successfully' }, { status: 200 });
+
+
     } catch (error) {
         return NextResponse.json({ error: 'Failed to delete FAQ' }, { status: 500 });
     }

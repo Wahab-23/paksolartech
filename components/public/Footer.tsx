@@ -6,9 +6,11 @@ const quickLinks = [
     { href: '/', label: 'Home' },
     { href: '/services', label: 'Services' },
     { href: '/about', label: 'About Us' },
+    { href: '/calculator', label: 'Solar Calculator' },
     { href: '/blog', label: 'Blog' },
     { href: '/contact', label: 'Contact' },
 ];
+
 
 export default function Footer() {
     return (
@@ -72,12 +74,14 @@ export default function Footer() {
                         <ul className="space-y-3">
                             <li className="flex items-start gap-3 text-sm text-muted-foreground">
                                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-                                Karachi, Sindh, Pakistan
+                                Karachi, Pakistan
                             </li>
                             <li className="flex items-center gap-3 text-sm text-muted-foreground">
                                 <Phone className="h-4 w-4 shrink-0 text-primary" />
-                                +92 300 1234567
+                                +92 311 1096664
                             </li>
+
+
                             <li className="flex items-center gap-3 text-sm text-muted-foreground">
                                 <Mail className="h-4 w-4 shrink-0 text-primary" />
                                 info@paksolartech.com

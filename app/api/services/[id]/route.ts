@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
+
 import db from '@/app/lib/db';
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
 
@@ -11,7 +13,7 @@ export async function GET(req: NextRequest, { params }: Props) {
     try {
         const { id } = await params;
         const [rows] = await db.query<RowDataPacket[]>('SELECT * FROM services WHERE id = ?', [id]);
-        
+
         if (rows.length === 0) {
             return NextResponse.json({ error: 'Service not found' }, { status: 404 });
         }
@@ -23,7 +25,8 @@ export async function GET(req: NextRequest, { params }: Props) {
             benefits: typeof row.benefits === 'string' ? JSON.parse(row.benefits) : (row.benefits || []),
             process: typeof row.process === 'string' ? JSON.parse(row.process) : (row.process || []),
             faqs: typeof row.faqs === 'string' ? JSON.parse(row.faqs) : (row.faqs || []),
-        });
+        }, { status: 200 });
+
     } catch (error) {
         return NextResponse.json({ error: 'Failed to fetch service' }, { status: 500 });
     }
@@ -34,7 +37,11 @@ export async function PUT(req: NextRequest, { params }: Props) {
     try {
         const { id } = await params;
         const body = await req.json();
-        const { title, slug, short_desc, long_desc, icon, image_url, features, benefits, process, is_active } = body;
+        const {
+            title, slug, short_desc, long_desc, icon, image_url,
+            features, benefits, process, faqs, is_active,
+            meta_title, meta_description, meta_keywords
+        } = body;
 
         await db.execute(
             `UPDATE services SET 
@@ -48,36 +55,51 @@ export async function PUT(req: NextRequest, { params }: Props) {
                 benefits = ?, 
                 process = ?, 
                 faqs = ?,
-                is_active = ? 
+                is_active = ?,
+                meta_title = ?,
+                meta_description = ?,
+                meta_keywords = ?
             WHERE id = ?`,
             [
-                title, 
-                slug, 
-                short_desc, 
-                long_desc, 
-                icon, 
-                image_url, 
-                JSON.stringify(features || []), 
-                JSON.stringify(benefits || []), 
-                JSON.stringify(process || []), 
-                JSON.stringify(body.faqs || []),
-                is_active, 
+                title,
+                slug,
+                short_desc,
+                long_desc,
+                icon,
+                image_url,
+                JSON.stringify(features || []),
+                JSON.stringify(benefits || []),
+                JSON.stringify(process || []),
+                JSON.stringify(faqs || []),
+                is_active,
+                meta_title || null,
+                meta_description || null,
+                meta_keywords || null,
                 id
             ]
         );
 
-        return NextResponse.json({ message: 'Service updated successfully' });
+        revalidateTag('services', 'max');
+
+        return NextResponse.json({ message: 'Service updated successfully' }, { status: 200 });
+
+
     } catch (error: any) {
         return NextResponse.json({ error: error.message || 'Failed to update service' }, { status: 500 });
     }
 }
+
 
 // DELETE service
 export async function DELETE(req: NextRequest, { params }: Props) {
     try {
         const { id } = await params;
         await db.execute('DELETE FROM services WHERE id = ?', [id]);
-        return NextResponse.json({ message: 'Service deleted successfully' });
+        revalidateTag('services', 'max');
+
+        return NextResponse.json({ message: 'Service deleted successfully' }, { status: 200 });
+
+
     } catch (error) {
         return NextResponse.json({ error: 'Failed to delete service' }, { status: 500 });
     }

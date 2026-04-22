@@ -50,7 +50,7 @@ export function ImageGallery({ images, productName }: ImageGalleryProps) {
                                     : "border-border/50 hover:border-primary/50"
                             )}
                         >
-                            <img
+                            <ProductImage
                                 src={url}
                                 alt={`${productName} thumbnail ${i + 1}`}
                                 className="h-full w-full object-cover"

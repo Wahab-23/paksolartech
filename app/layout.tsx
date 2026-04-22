@@ -5,7 +5,28 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { Outfit } from "next/font/google";
 import "./globals.css";
 
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "PakSolarTech",
+  "url": "https://paksolartech.com",
+  "logo": "https://paksolartech.com/Logo/PakSolarTech%20Logo.png",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+92-311-1096664",
+    "contactType": "customer service",
+    "areaServed": "PK",
+    "availableLanguage": ["English", "Urdu"]
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Karachi",
+    "addressCountry": "PK"
+  }
+};
+
 const outfit = Outfit({
+
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
@@ -63,7 +84,14 @@ export const metadata: Metadata = {
       'max-snippet': -1,
     },
   },
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/Logo/PakSolarTech Logo.png",
+  },
 };
+
 
 export default function RootLayout({
   children,
@@ -71,9 +99,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en-PK" suppressHydrationWarning>
+
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
         {/* Google Analytics */}
+
         <Script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-2V0GYL1NTY"

@@ -22,6 +22,7 @@ interface Blog {
     cover_image: string | null;
     is_published: boolean;
     created_at: string;
+    published_at: string | null;
 }
 
 export default function BlogsPage() {
@@ -132,7 +133,7 @@ export default function BlogsPage() {
                                         /{blog.slug}
                                     </TableCell>
                                     <TableCell className="text-muted-foreground text-xs hidden md:table-cell">
-                                        {new Date(blog.created_at).toLocaleDateString()}
+                                        {new Date(blog.published_at || blog.created_at).toLocaleDateString()}
                                     </TableCell>
                                     <TableCell>
                                         <Badge

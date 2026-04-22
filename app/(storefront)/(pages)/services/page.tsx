@@ -4,12 +4,26 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Globe2, ArrowRight, CheckCircle2, Shield, Zap, Sun, Battery, Wrench, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export const metadata: Metadata = {
-  title: 'Our Services — PakSolarTech',
-  description: 'Comprehensive solar energy solutions in Pakistan. From residential and commercial installations to battery storage and energy consulting.',
-  keywords: 'solar services Pakistan, residential solar, commercial solar, battery storage Karachi, solar maintenance',
+  title: 'Solar Energy Services in Pakistan — Installation, Storage & Consulting',
+  description: 'End-to-end solar solutions for homes and businesses in Karachi. Residential & commercial installation, battery storage, maintenance, and energy consulting with 25-year warranty.',
+  keywords: 'solar services Pakistan, solar installation Karachi, residential solar Pakistan, commercial solar, battery storage, solar maintenance, energy consulting',
+  alternates: {
+    canonical: '/services',
+  },
 };
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://paksolartech.com" },
+    { "@type": "ListItem", "position": 2, "name": "Services", "item": "https://paksolartech.com/services" }
+  ]
+};
+
 
 const iconMap: any = { Sun, Zap, Battery, Wrench, BarChart3, Shield };
 
@@ -36,7 +50,12 @@ export default async function AllServicesPage() {
 
   return (
     <main className="min-h-screen bg-background pt-32 pb-20">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       {/* ── HERO SECTION ── */}
+
       <section className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-24 text-center">
         <Badge variant="outline" className="mb-6 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
           <Globe2 className="h-3.5 w-3.5" />
@@ -46,7 +65,7 @@ export default async function AllServicesPage() {
           End-to-End <span className="text-gradient">Solar Solutions</span>
         </h1>
         <p className="mx-auto max-w-2xl text-xl leading-relaxed text-muted-foreground">
-          Whether you&apos;re a homeowner looking to slash bills or a business seeking energy independence, 
+          Whether you&apos;re a homeowner looking to slash bills or a business seeking energy independence,
           we have the expertise to power your transition to clean energy.
         </p>
       </section>
@@ -57,17 +76,20 @@ export default async function AllServicesPage() {
           {services.map((s) => {
             const Icon = iconMap[s.icon] || Sun;
             return (
-              <Link 
-                key={s.slug} 
+              <Link
+                key={s.slug}
                 href={`/services/${s.slug}`}
                 className="group flex flex-col overflow-hidden rounded-3xl border border-border/50 bg-card/50 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-2xl hover:shadow-primary/5"
               >
                 {/* Image Header */}
                 <div className="relative aspect-[16/10] overflow-hidden">
-                  <img 
-                    src={s.image_url} 
+                  <Image
+                    src={s.image_url}
                     alt={s.title}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    fill
+                    loading="eager"
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-background/80 via-transparent to-transparent opacity-60" />
                   <div className="absolute bottom-4 left-4">
@@ -105,10 +127,10 @@ export default async function AllServicesPage() {
                 The PakSolarTech <span className="text-gradient">Advantage</span>
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-                We don&apos;t just install panels; we build long-term relationships with our clients, 
+                We don&apos;t just install panels; we build long-term relationships with our clients,
                 ensuring their investment in solar energy continues to pay off for decades.
               </p>
-              
+
               <div className="mt-10 space-y-4">
                 {[
                   'Customized engineering for every roof',
@@ -164,7 +186,7 @@ export default async function AllServicesPage() {
                 </Button>
               </Link>
               <Link href="/contact">
-                <Button size="lg" variant="outline" className="rounded-full border-white/30 px-10 text-white hover:bg-white/10">
+                <Button size="lg" variant="outline" className="rounded-full border-white/30 px-10 text-white bg-white/5 hover:bg-white/10">
                   Request a Quote
                 </Button>
               </Link>

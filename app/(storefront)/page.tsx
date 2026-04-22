@@ -5,18 +5,21 @@ import {
   CheckCircle2, Mail, Phone, Sparkles, Globe2, Users, TrendingUp, TrendingDown, ArrowRight, HelpCircle
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import HeroButtons from '@/components/public/HeroButtons';
-import { getFeaturedProducts } from '@/app/models/product.model';
 import SolarCalculatorClient from '@/components/calculator/SolarCalculatorClient';
-import DeferredContactSection from '@/components/public/DeferredContactSection';
 import { getAllServices, Service } from '@/app/models/service.model';
 import { getAllFAQs } from '@/app/models/faq.model';
+import DeferredContactSection from '@/components/public/DeferredContactSection';
 import FAQSection from '@/components/public/FAQSection';
 
 export const metadata: Metadata = {
   title: 'PakSolarTech — #1 Solar Energy Company in Pakistan',
-  description: 'Harness the power of the sun with Pakistan\'s leading solar provider. Save up to 90% on bills with our residential and commercial solar solutions.',
-  keywords: 'solar energy Pakistan, best solar company, residential solar panels, commercial solar installation, net metering Pakistan',
+  description: 'Karachi\'s #1 solar energy provider. Save up to 90% on electricity bills with our residential and commercial solar panel installations, net metering, and 25-year warranty.',
+  keywords: 'solar energy Pakistan, best solar company Karachi, residential solar panels, commercial solar installation, net metering Pakistan, solar panel Karachi',
+  alternates: {
+    canonical: '/',
+  },
 };
 
 const stats = [
@@ -30,8 +33,26 @@ export default async function Home() {
   const services = await getAllServices();
   const faqs = await getAllFAQs();
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
+
       <main className="relative overflow-hidden">
         <div
           className="pointer-events-none fixed inset-0 -z-10 opacity-30"
@@ -67,7 +88,7 @@ function HeroSection() {
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
+
           {/* Left Column: Content */}
           <div className="flex flex-col items-start text-left">
             <Badge
@@ -81,7 +102,7 @@ function HeroSection() {
             <h1 className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl animate-slide-up leading-[1.1]">
               Stop Paying <br />
               <span className="text-destructive font-extrabold italic">Expensive Bills</span>. <br />
-              Start <span className="text-gradient">Owning Power</span>.
+              Start <span className="text-gradient">Owning Solar Power</span> <span className="text-primary tracking-tighter">in Karachi</span>.
             </h1>
 
             <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground animate-slide-up" style={{ animationDelay: '200ms' }}>
@@ -107,9 +128,9 @@ function HeroSection() {
                   </div>
                   <span className="text-[10px] uppercase font-bold tracking-wider text-muted-foreground">Bill Offset</span>
                 </div>
-                <div className="text-2xl font-bold">Up to 90%</div>
+                <div className="text-2xl font-bold">70% - 90%</div>
                 <div className="w-full h-1 bg-muted rounded-full mt-3 overflow-hidden">
-                  <div className="h-full bg-green-500 w-[90%]" />
+                  <div className="h-full bg-green-500 w-[80%]" />
                 </div>
               </div>
 
@@ -317,10 +338,13 @@ function AboutSection() {
           </div>
 
           <div className="relative aspect-square overflow-hidden rounded-3xl border border-border/50">
-            <img
-              src="https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?auto=format&fit=crop&q=80&w=1000"
-              alt="Solar Panels Installation"
-              className="h-full w-full object-cover"
+            <Image
+              src="/uploads/blogs/pioneering-solar-energy.jpg"
+              alt="PakSolarTech solar panel installation on a residential rooftop in Karachi"
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority={false}
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
             <div className="absolute bottom-8 left-8">
@@ -361,7 +385,8 @@ function ContactSection() {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Call us anytime</p>
-                  <p className="font-medium">+92 300 1234567</p>
+                  <p className="font-medium">+92 311 1096664</p>
+
                 </div>
               </div>
               <div className="flex items-center gap-4">

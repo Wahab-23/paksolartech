@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from 'react';
 
-import { Users, Store, ShoppingBag, MessageSquare, TrendingUp, FileText, Package, DollarSign } from 'lucide-react';
+import { 
+    Users, Store, ShoppingBag, MessageSquare, TrendingUp, 
+    FileText, Package, DollarSign, RefreshCw, CheckCircle2 
+} from 'lucide-react';
 import Link from 'next/link';
 
 interface MarketplaceStats {
@@ -96,7 +99,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Quick Links */}
-            <div>
+            <div className="mb-8">
                 <h2 className="mb-4 text-sm font-semibold text-muted-foreground uppercase tracking-wider">Quick Actions</h2>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {quickLinks.map((link) => (
@@ -114,6 +117,70 @@ export default function DashboardPage() {
                     ))}
                 </div>
             </div>
+
+            {/* System Management */}
+            <div className="mt-12">
+                <h2 className="mb-4 text-sm font-semibold text-muted-foreground uppercase tracking-wider">System Management</h2>
+                <div className="rounded-2xl border border-border/50 bg-card/30 p-6 backdrop-blur-sm">
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                        <div>
+                            <h3 className="text-lg font-bold">Cache Management</h3>
+                            <p className="text-sm text-muted-foreground mt-1">If updates aren't showing on the live site, use these buttons to clear the static cache.</p>
+                        </div>
+                        <div className="flex flex-wrap gap-3">
+                            <RevalidateButton type="all" label="Clear Whole Site" icon={RefreshCw} />
+                            <RevalidateButton type="tag" tag="blogs" label="Refresh Blogs" icon={FileText} />
+                            <RevalidateButton type="tag" tag="services" label="Refresh Services" icon={Package} />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
+    );
+}
+
+function RevalidateButton({ type, tag, label, icon: Icon }: { type: string, tag?: string, label: string, icon: any }) {
+    const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+
+    const handleRevalidate = async () => {
+        setStatus('loading');
+        try {
+            const res = await fetch('/api/admin/revalidate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type, tag }),
+            });
+            if (res.ok) {
+                setStatus('success');
+                setTimeout(() => setStatus('idle'), 3000);
+            } else {
+                setStatus('error');
+            }
+        } catch (e) {
+            setStatus('error');
+        }
+    };
+
+    return (
+        <button
+            onClick={handleRevalidate}
+            disabled={status === 'loading'}
+            className={`
+                flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all
+                ${status === 'success' ? 'bg-green-500/20 text-green-400 border border-green-500/30' : 
+                  status === 'error' ? 'bg-destructive/20 text-destructive border border-destructive/30' :
+                  'bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20'}
+                disabled:opacity-50
+            `}
+        >
+            {status === 'loading' ? (
+                <RefreshCw className="h-4 w-4 animate-spin" />
+            ) : status === 'success' ? (
+                <CheckCircle2 className="h-4 w-4" />
+            ) : (
+                <Icon className="h-4 w-4" />
+            )}
+            {label}
+        </button>
     );
 }

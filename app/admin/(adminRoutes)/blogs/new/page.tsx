@@ -78,9 +78,10 @@ export default function NewBlogPage() {
     // Estimate reading time
     const estimateReadingTime = (content: string) => {
         const wordsPerMinute = 200;
-        const words = content.trim().split(/\s+/).length;
+        const words = content.replace(/<[^>]*>/g, '').trim().split(/\s+/).length;
         return Math.ceil(words / wordsPerMinute);
     };
+
 
     const addFaq = () => setForm(prev => ({ ...prev, faqs: [...prev.faqs, { question: '', answer: '' }] }));
     const removeFaq = (idx: number) => setForm(prev => ({ ...prev, faqs: prev.faqs.filter((_, i) => i !== idx) }));
