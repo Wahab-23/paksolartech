@@ -10,6 +10,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/calculator',
+        destination: '/solar-calculator-pakistan',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

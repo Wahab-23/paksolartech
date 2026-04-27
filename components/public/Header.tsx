@@ -11,7 +11,7 @@ const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/services', label: 'Services' },
     { href: '/about', label: 'About' },
-    { href: '/calculator', label: 'Calculator' },
+    { href: '/solar-calculator-pakistan', label: 'Calculator' },
     { href: '/blog', label: 'Blog' },
     { href: '/contact', label: 'Contact' },
 ];

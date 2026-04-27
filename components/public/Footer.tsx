@@ -6,7 +6,7 @@ const quickLinks = [
     { href: '/', label: 'Home' },
     { href: '/services', label: 'Services' },
     { href: '/about', label: 'About Us' },
-    { href: '/calculator', label: 'Solar Calculator' },
+    { href: '/solar-calculator-pakistan', label: 'Solar Calculator' },
     { href: '/blog', label: 'Blog' },
     { href: '/contact', label: 'Contact' },
 ];
