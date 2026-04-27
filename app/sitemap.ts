@@ -11,13 +11,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/services',
     '/about',
     '/contact',
-    '/calculator',
+    '/solar-calculator-pakistan',
     '/blog',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
-    priority: route === '' ? 1 : (route === '/calculator' ? 0.9 : 0.8),
+    priority: route === '' ? 1 : (route === '/solar-calculator-pakistan' ? 0.9 : 0.8),
   }));
 
 

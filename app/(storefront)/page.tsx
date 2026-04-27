@@ -14,9 +14,9 @@ import DeferredContactSection from '@/components/public/DeferredContactSection';
 import FAQSection from '@/components/public/FAQSection';
 
 export const metadata: Metadata = {
-  title: 'PakSolarTech — #1 Solar Energy Company in Pakistan',
-  description: 'Karachi\'s #1 solar energy provider. Save up to 90% on electricity bills with our residential and commercial solar panel installations, net metering, and 25-year warranty.',
-  keywords: 'solar energy Pakistan, best solar company Karachi, residential solar panels, commercial solar installation, net metering Pakistan, solar panel Karachi',
+  title: 'Solar System Installation in Pakistan | Prices, Net Metering & Calculator',
+  description: 'Looking for affordable solar system installation in Pakistan? Pak Solar Tech provides complete solar solutions including on-grid, hybrid, and off-grid systems with net metering support. Calculate your savings and reduce your electricity bill today.',
+  keywords: 'solar energy Pakistan, best solar company Karachi, residential solar panels, commercial solar installation, net metering Pakistan, solar panel Karachi, solar system price in Pakistan, 5kW solar system, 10kW solar system',
   alternates: {
     canonical: '/',
   },
@@ -68,8 +68,10 @@ export default async function Home() {
         <StatsSection />
         <CalculatorSection />
         <ServicesSection services={services} />
-        <TrustSection />
+        <PriceSection />
+        <NetMeteringSection />
         <AboutSection />
+        <ProjectsSection />
         <FAQSection faqs={faqs} />
         <ContactSection />
       </main>
@@ -96,17 +98,17 @@ function HeroSection() {
               className="mb-6 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary animate-fade-in"
             >
               <Sparkles className="h-3.5 w-3.5" />
-              #1 Rated Solar Installer in Karachi
+              #1 Solar Energy Solutions in Pakistan
             </Badge>
 
-            <h1 className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl animate-slide-up leading-[1.1]">
-              Stop Paying <br />
-              <span className="text-destructive font-extrabold italic">Expensive Bills</span>. <br />
-              Start <span className="text-gradient">Owning Solar Power</span> <span className="text-primary tracking-tighter">in Karachi</span>.
+            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl animate-slide-up leading-[1.15]">
+              Solar System Installation <br />
+              <span className="text-gradient italic">in Pakistan</span>. <br />
+              <span className="text-3xl sm:text-4xl lg:text-5xl opacity-90">Prices, Net Metering & Calculator</span>
             </h1>
 
             <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground animate-slide-up" style={{ animationDelay: '200ms' }}>
-              Karachi gets 5.5 hours of peak sun daily — enough to cut your electricity bill by 70–90%, permanently. Calculate your savings below and talk to a specialist on WhatsApp today.
+              Looking for affordable solar system installation in Pakistan? Pak Solar Tech provides complete solar solutions including on-grid, hybrid, and off-grid systems with net metering support. Calculate your savings and reduce your electricity bill today.
             </p>
 
             <div className="mt-10 animate-slide-up" style={{ animationDelay: '400ms' }}>
@@ -204,11 +206,11 @@ function CalculatorSection() {
       <div className="mb-12 text-center">
         <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
           <TrendingUp className="h-3.5 w-3.5" />
-          Solar Savings Calculator
+          Solar Calculator Pakistan
         </Badge>
-        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Calculate Your Savings</h2>
+        <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Solar Calculator Pakistan</h2>
         <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-          Enter your average bill — we&apos;ll estimate your ideal system size, installation cost, and payback period.
+          Use our free solar calculator to estimate system cost, calculate ROI, and predict your monthly savings.
         </p>
       </div>
       <SolarCalculatorClient redirectMode={false} />
@@ -216,32 +218,64 @@ function CalculatorSection() {
   );
 }
 
-function TrustSection() {
-  const steps = [
-    { title: 'Chat with us on WhatsApp', desc: 'Tell us your bill, your area, and your roof type.' },
-    { title: 'Itemized Quote', desc: 'We send you a detailed, transparent quote within 24 hours.' },
-    { title: 'Review & Compare', desc: 'Review panel brands, inverter specs, and total cost.' },
-    { title: 'Zero Pressure Decision', desc: 'Take your time to decide — we are here to help, not push.' },
-    { title: 'Installation & Credits', desc: 'We handle everything from installation to official net metering.' },
+function PriceSection() {
+  const priceItems = [
+    { title: '5kW Solar System', desc: 'Ideal for small homes with 1-2 ACs. High-efficiency Tier-1 panels.' },
+    { title: '10kW Solar System', desc: 'Perfect for medium to large residences with 3-5 ACs.' },
+    { title: 'Commercial Setups', desc: 'Scalable solutions for factories, offices, and schools.' },
   ];
 
   return (
-    <section className="section-padding bg-muted/20">
+    <section className="section-padding bg-muted/10">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 text-center">
+          <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
+            <TrendingUp className="h-3.5 w-3.5" />
+            Affordable Excellence
+          </Badge>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Solar System Price in Pakistan</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+            Get the latest and most competitive solar prices for residential and commercial setups nationwide.
+          </p>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-3">
+          {priceItems.map((item, i) => (
+            <div key={i} className="rounded-2xl border border-border/50 bg-card p-8 transition-all hover:border-primary/30">
+              <h3 className="text-xl font-bold mb-3">{item.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function NetMeteringSection() {
+  const steps = [
+    { title: 'Apply for Net Metering', desc: 'We handle the entire application process with your local DISCO.' },
+    { title: 'Get Approvals Faster', desc: 'Our experienced team ensures all documentation is perfect for quick approval.' },
+    { title: 'Export Electricity to Grid', desc: 'Start selling excess solar power back to the grid and earn credits.' },
+  ];
+
+  return (
+    <section className="section-padding border-y border-border/50">
       <div className="mx-auto max-w-5xl">
         <div className="mb-12 text-center">
           <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
-            <CheckCircle2 className="h-3.5 w-3.5" />
-            Our Process
+            <Zap className="h-3.5 w-3.5" />
+            Net Metering
           </Badge>
-          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Here&apos;s exactly what happens next</h2>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Net Metering in Pakistan</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+            Maximize your ROI by exporting excess energy. We handle the paperwork, you enjoy the savings.
+          </p>
         </div>
 
         <div className="space-y-6">
           {steps.map((step, i) => (
-            <div
-              key={i}
-              className="flex items-start gap-4 rounded-2xl border border-border/50 bg-card/50 p-6 transition-all hover:border-primary/30"
-            >
+            <div key={i} className="flex items-start gap-4 rounded-2xl border border-border/50 bg-card/50 p-6 transition-all hover:border-primary/30">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
                 {i + 1}
               </div>
@@ -266,13 +300,13 @@ function ServicesSection({ services }: { services: Service[] }) {
         <div className="mb-12 text-center">
           <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
             <Globe2 className="h-3.5 w-3.5" />
-            What We Offer
+            Solar System Solutions in Pakistan
           </Badge>
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">
-            Our <span className="text-gradient">Services</span>
+            Solar System <span className="text-gradient">Solutions</span> in Pakistan
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            End-to-end solar energy solutions designed to meet your specific needs and budget.
+            We provide complete solar solutions including On-Grid, Hybrid, and Off-Grid systems tailored for Pakistani homes and businesses.
           </p>
         </div>
 
@@ -310,11 +344,10 @@ function AboutSection() {
           <div>
             <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
               <Users className="h-3.5 w-3.5" />
-              About PakSolarTech
+              Why Choose Us
             </Badge>
             <h2 className="mb-6 text-3xl font-bold tracking-tight sm:text-4xl">
-              Pioneering <span className="text-gradient">Solar Energy</span> <br />
-              Across Pakistan
+              Why <span className="text-gradient">Choose Us</span>
             </h2>
             <p className="mb-6 leading-relaxed text-muted-foreground">
               Founded with a vision to make clean energy accessible to every Pakistani household
@@ -324,10 +357,10 @@ function AboutSection() {
             </p>
             <ul className="space-y-3">
               {[
-                'Tier-1 solar panels from top global manufacturers',
-                'Certified engineers with 15+ years of experience',
-                'Complete net metering assistance & documentation',
-                'Post-installation monitoring & maintenance',
+                'Transparent pricing with no hidden charges',
+                'Fast and professional installation across Pakistan',
+                'Maximum ROI systems designed for efficiency',
+                'Complete net metering support and documentation',
               ].map((item) => (
                 <li key={item} className="flex items-start gap-3 text-sm text-muted-foreground">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
@@ -352,6 +385,43 @@ function AboutSection() {
               <p className="text-sm text-white/80">Years of Experience</p>
             </div>
           </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProjectsSection() {
+  const projects = [
+    { title: '5kW System in Karachi', location: 'DHA Phase 6' },
+    { title: '10kW System in Lahore', location: 'Gulberg III' },
+    { title: 'Commercial Systems', location: 'Nationwide' },
+  ];
+
+  return (
+    <section className="section-padding bg-muted/5">
+      <div className="mx-auto max-w-7xl">
+        <div className="mb-12 text-center">
+          <Badge variant="outline" className="mb-4 gap-2 border-primary/30 bg-primary/5 px-4 py-1.5 text-primary">
+            <Globe2 className="h-3.5 w-3.5" />
+            Recent Installations
+          </Badge>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Our Solar Projects in Pakistan</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
+            Successfully delivering high-performance solar solutions across Pakistan.
+          </p>
+        </div>
+
+        <div className="grid gap-6 sm:grid-cols-3">
+          {projects.map((project, i) => (
+            <div key={i} className="group relative overflow-hidden rounded-2xl border border-border/50 bg-card p-6 transition-all hover:border-primary/30">
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                <Sun className="h-5 w-5 text-primary" />
+              </div>
+              <h3 className="font-bold">{project.title}</h3>
+              <p className="text-sm text-muted-foreground">{project.location}</p>
+            </div>
+          ))}
         </div>
       </div>
     </section>
