@@ -15,7 +15,7 @@ Next.js 14 · TypeScript · Tailwind CSS · MySQL
 
 ## Screenshots
 ![Pak Solar Tech Home](https://paksolartech.com/images/demo/homepage.png)
-![Pak Solar Tech Calculator](https://paksolartech.com/images/demo/calculator.png)
+![Pak Solar Tech Calculator](https://paksolartech.com/images/demo/solar-calculator.png)
 ![Pak Solar Tech Services](https://paksolartech.com/images/demo/Services.png)
 
 ## Run Locally
