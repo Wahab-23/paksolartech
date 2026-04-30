@@ -13,11 +13,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/contact',
     '/solar-calculator-pakistan',
     '/blog',
+    '/privacy',
+    '/careers',
+    '/terms',
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
-    priority: route === '' ? 1 : (route === '/solar-calculator-pakistan' ? 0.9 : 0.8),
+    priority: route === '' ? 1 : 
+              (route === '/solar-calculator-pakistan' ? 0.9 : 
+              (route === '/careers' ? 0.7 : 
+              (['/privacy', '/terms'].includes(route) ? 0.5 : 0.8))),
   }));
 
 
