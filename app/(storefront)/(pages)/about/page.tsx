@@ -224,7 +224,7 @@ export default async function AboutPage() {
                 </div>
               </div>
               <div className="relative">
-                <div className="relative aspect-square overflow-hidden rounded-3xl border border-border/50 bg-card/50 shadow-2xl">
+                <div className="relative aspect-square overflow-hidden rounded-3xl border border-border/50 bg-card/50 shadow-2xl min-h-100 w-full">
                   <div className="absolute inset-0 bg-linear-to-tr from-primary/20 via-transparent to-chart-2/20" />
                   <div className="flex flex-col items-center justify-center h-full p-12 text-center">
                     <Sun className="h-16 w-16 text-primary mb-6 animate-pulse-slow" />
