@@ -81,7 +81,7 @@ export default async function Home() {
 
 function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 lg:pt-0">
+    <section className="relative min-h-screen flex items-center overflow-hidden pt-20 lg:pt-20">
       {/* Background Ambient Glows */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <div className="absolute top-[20%] -left-[10%] h-[500px] w-[500px] rounded-full bg-primary/20 blur-[120px] animate-pulse-slow" />
