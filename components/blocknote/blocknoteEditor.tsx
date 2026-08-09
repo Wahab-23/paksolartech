@@ -1,6 +1,6 @@
 'use client';
 
-import { forwardRef, useEffect, useRef } from 'react';
+import { forwardRef, useCallback, useEffect, useRef } from 'react';
 import "@blocknote/core/fonts/inter.css";
 import { useCreateBlockNote } from "@blocknote/react";
 import { BlockNoteView } from "@blocknote/mantine";
@@ -14,10 +14,11 @@ export interface BlockNoteEditorRef {
 interface BlockNoteEditorProps {
   initialContent?: string;
   placeholder?: string;
+  onChange?: (content: string) => void;
 }
 
 const BlockNoteEditor = forwardRef<BlockNoteEditorRef, BlockNoteEditorProps>(
-  ({ initialContent = '', placeholder = 'Start typing...' }, ref) => {
+  ({ initialContent = '', placeholder = 'Start typing...', onChange }, ref) => {
     const editor = useCreateBlockNote();
     const hasInitialized = useRef(false);
 
@@ -47,6 +48,19 @@ const BlockNoteEditor = forwardRef<BlockNoteEditorRef, BlockNoteEditorProps>(
         }
       }
     }, [initialContent, editor]);
+
+    const handleEditorChange = useCallback(
+      async (editorInstance: any) => {
+        if (!onChange) return;
+        try {
+          const html = await editorInstance.blocksToHTMLLossy(editorInstance.document);
+          onChange(html);
+        } catch (e) {
+          console.error('Error exporting content on change:', e);
+        }
+      },
+      [onChange]
+    );
 
     // Expose methods via ref
     useEffect(() => {
@@ -91,6 +105,7 @@ const BlockNoteEditor = forwardRef<BlockNoteEditorRef, BlockNoteEditorProps>(
           editor={editor}
           theme="light"
           className="blocknote-light bg-white h-auto"
+          onChange={handleEditorChange}
         />
       </div>
     );

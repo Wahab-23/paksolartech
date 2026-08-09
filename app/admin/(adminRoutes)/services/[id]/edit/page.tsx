@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
+import BlockNoteEditor from '@/components/blocknote/blocknoteEditor';
 import { 
     ArrowLeft, Loader2, Save, Sun, Zap, Battery, Wrench, 
     BarChart3, Shield, Plus, Trash2, Image as ImageIcon, Upload,
@@ -474,13 +475,13 @@ export default function EditServicePage({ params }: Props) {
                                             </div>
                                             <div className="grid gap-2">
                                                 <Label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Answer</Label>
-                                                <Textarea 
-                                                    value={faq.answer} 
-                                                    onChange={(e) => updateFaq(i, 'answer', e.target.value)} 
-                                                    placeholder="Detailed answer..." 
-                                                    rows={3} 
-                                                    className="bg-background"
-                                                />
+                                                <div className="rounded-xl border border-border/50 bg-background p-1">
+                                                    <BlockNoteEditor
+                                                        initialContent={faq.answer}
+                                                        placeholder="Detailed answer..."
+                                                        onChange={(content) => updateFaq(i, 'answer', content)}
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -499,7 +500,11 @@ export default function EditServicePage({ params }: Props) {
                                                         {faq.question || `Question ${i + 1}`}
                                                     </AccordionTrigger>
                                                     <AccordionContent className="text-sm text-muted-foreground">
-                                                        {faq.answer || "No answer provided yet."}
+                                                        {faq.answer ? (
+                                                            <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                                                        ) : (
+                                                            "No answer provided yet."
+                                                        )}
                                                     </AccordionContent>
                                                 </AccordionItem>
                                             ))}

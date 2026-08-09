@@ -41,7 +41,7 @@ export default async function Home() {
       "name": faq.question,
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": faq.answer
+        "text": faq.answer ? faq.answer.replace(/<[^>]+>/g, '') : ''
       }
     }))
   };

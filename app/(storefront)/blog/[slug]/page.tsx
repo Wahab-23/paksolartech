@@ -81,7 +81,7 @@ export default async function BlogDetailPage({ params }: Props) {
             "name": faq.question,
             "acceptedAnswer": {
                 "@type": "Answer",
-                "text": faq.answer
+                "text": faq.answer ? faq.answer.replace(/<[^>]+>/g, '') : ''
             }
         }))
     } : null;
@@ -218,7 +218,11 @@ export default async function BlogDetailPage({ params }: Props) {
                                                     {faq.question}
                                                 </AccordionTrigger>
                                                 <AccordionContent className="text-base leading-relaxed text-muted-foreground pb-6">
-                                                    {faq.answer}
+                                                    {faq.answer && faq.answer.trim().startsWith('<') ? (
+                                                        <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                                                    ) : (
+                                                        faq.answer
+                                                    )}
                                                 </AccordionContent>
                                             </AccordionItem>
                                         ))}

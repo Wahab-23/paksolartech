@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
+import BlockNoteEditor from '@/components/blocknote/blocknoteEditor';
 import { 
     ArrowLeft, Loader2, Plus, Sun, Zap, Battery, Wrench, 
     BarChart3, Shield, Trash2, Upload, Globe2, Heart, 
@@ -374,7 +375,11 @@ export default function NewServicePage() {
                                                     {faq.question || `Question ${i + 1}`}
                                                 </AccordionTrigger>
                                                 <AccordionContent className="text-sm text-muted-foreground">
-                                                    {faq.answer || "No answer provided yet."}
+                                                    {faq.answer ? (
+                                                        <div dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                                                    ) : (
+                                                        "No answer provided yet."
+                                                    )}
                                                 </AccordionContent>
                                             </AccordionItem>
                                         ))}

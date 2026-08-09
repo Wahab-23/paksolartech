@@ -17,6 +17,15 @@ interface Props {
 export default function FAQSection({ faqs }: Props) {
     const [openIndex, setOpenIndex] = useState<number | null>(0);
 
+    const renderAnswer = (answer: string) => {
+        if (!answer) return null;
+        return answer.trim().startsWith('<') ? (
+            <div dangerouslySetInnerHTML={{ __html: answer }} />
+        ) : (
+            <p>{answer}</p>
+        );
+    };
+
     if (!faqs || faqs.length === 0) return null;
 
     return (
@@ -62,7 +71,7 @@ export default function FAQSection({ faqs }: Props) {
                                 }`}
                             >
                                 <div className="px-6 pb-6 text-muted-foreground leading-relaxed">
-                                    {faq.answer}
+                                    {renderAnswer(faq.answer)}
                                 </div>
                             </div>
                         </div>
